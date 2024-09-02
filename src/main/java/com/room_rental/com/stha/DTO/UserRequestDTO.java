@@ -18,6 +18,8 @@ public class UserRequestDTO {
     @Email
     private String email;
     @NotBlank
+    private String username;
+    @NotBlank
     private String phoneNumber;
     @NotBlank
     private String password;
