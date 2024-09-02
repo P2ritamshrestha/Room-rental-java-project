@@ -1,6 +1,7 @@
 package com.room_rental.com.stha.controller;
 
 import com.room_rental.com.stha.DTO.UserRequestDTO;
+import com.room_rental.com.stha.DTO.UserResponseDTO;
 import com.room_rental.com.stha.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -14,14 +15,14 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/user")
+@RequestMapping("/api/v1/landlord")
 public class UserController {
     private final UserService userService;
 
     @GetMapping()
-    public ResponseEntity<List<UserRequestDTO>> getUsers() {
-        List<UserRequestDTO> userRequestDTO = userService.getUsers();
-        return new ResponseEntity(userRequestDTO, HttpStatus.OK);
+    public ResponseEntity<List<UserResponseDTO>> getUsers() {
+        List<UserResponseDTO> userResponseDTO = userService.getUsers();
+        return new ResponseEntity<>(userResponseDTO, HttpStatus.OK);
     }
 
 }

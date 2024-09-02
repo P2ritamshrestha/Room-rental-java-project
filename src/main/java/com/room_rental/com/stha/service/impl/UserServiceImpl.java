@@ -1,6 +1,7 @@
 package com.room_rental.com.stha.service.impl;
 
 import com.room_rental.com.stha.DTO.UserRequestDTO;
+import com.room_rental.com.stha.DTO.UserResponseDTO;
 import com.room_rental.com.stha.models.User;
 import com.room_rental.com.stha.repository.UserRepository;
 import com.room_rental.com.stha.service.UserService;
@@ -30,14 +31,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserRequestDTO> getUsers() {
+    public List<UserResponseDTO> getUsers() {
         List<User> users = userRepository.findAll();
-        UserRequestDTO userRequestDTO = new UserRequestDTO();
-        return users.stream().map(user -> {
-            userRequestDTO.setFullName(user.getFullName());
-            userRequestDTO.setEmail(user.getEmail());
-            userRequestDTO.setPhoneNumber(user.getPhoneNumber());
-            return userRequestDTO;
+        UserResponseDTO userResponseDTO = new UserResponseDTO();
+         return users.stream().map(user -> {
+            userResponseDTO.setFullName(user.getFullName());
+            userResponseDTO.setPhoneNumber(user.getPhoneNumber());
+            userResponseDTO.setAddress(user.getAddress());
+            userResponseDTO.setUsername(user.getUsername());
+            userResponseDTO.setRole(user.getRole());
+            userResponseDTO.setId(user.getId());
+            userResponseDTO.setEmail(user.getEmail());
+            userResponseDTO.setPhoneNumber(user.getPhoneNumber());
+            return userResponseDTO;
         }).toList();
     }
 }
