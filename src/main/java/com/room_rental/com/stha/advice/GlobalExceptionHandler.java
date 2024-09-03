@@ -1,5 +1,6 @@
 package com.room_rental.com.stha.advice;
 
+import com.room_rental.com.stha.exception.PasswordMismatchException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -19,6 +20,14 @@ public class GlobalExceptionHandler extends Throwable {
         ex.getBindingResult().getFieldErrors().forEach(error -> {
             errorMap.put(error.getField(), error.getDefaultMessage());
         });
+        return errorMap;
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(PasswordMismatchException.class)
+    public Map<String, String> handlePasswordMismatchException(PasswordMismatchException ex) {
+        Map<String, String> errorMap = new HashMap<>();
+        errorMap.put("error", ex.getMessage());
         return errorMap;
     }
 

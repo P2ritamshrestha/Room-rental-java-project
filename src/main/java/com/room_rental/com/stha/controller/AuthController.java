@@ -1,13 +1,11 @@
 package com.room_rental.com.stha.controller;
 
-import com.room_rental.com.stha.DTO.JwtAuthenticationResponse;
-import com.room_rental.com.stha.DTO.RefreshTokenRequest;
-import com.room_rental.com.stha.DTO.SignInRequest;
-import com.room_rental.com.stha.DTO.SignUpRequest;
+import com.room_rental.com.stha.DTO.*;
 import com.room_rental.com.stha.models.User;
 import com.room_rental.com.stha.service.AuthenticationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -44,6 +42,12 @@ public class AuthController {
     @PostMapping("/refresh")
     public ResponseEntity<JwtAuthenticationResponse> refresh(@RequestBody RefreshTokenRequest refreshTokenRequest){
         return ResponseEntity.ok(authenticationService.refreshToken(refreshTokenRequest));
+    }
+
+    @PostMapping("/{id}")
+    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordDTO changePasswordDTO, @PathVariable String id){
+        authenticationService.changePassword(changePasswordDTO,id);
+        return ResponseEntity.ok("Password changed successfully");
     }
 
 }
