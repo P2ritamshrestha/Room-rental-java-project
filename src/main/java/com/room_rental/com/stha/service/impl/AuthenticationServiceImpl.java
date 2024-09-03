@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
@@ -32,7 +33,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setEmail(signUpRequest.getEmail());
         user.setUsername(signUpRequest.getUsername());
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
-        user.setConformPassword(passwordEncoder.encode(signUpRequest.getConfirmPassword()));
+        if (Objects.equals(signUpRequest.getPassword(), signUpRequest.getConfirmPassword())) {
+            user.setConfirmPassword(passwordEncoder.encode(signUpRequest.getConfirmPassword()));
+        } else {
+            throw new IllegalArgumentException("Passwords do not match.");
+        }
         user.setAddress(signUpRequest.getAddress());
         user.setPhoneNumber(signUpRequest.getPhoneNumber());
         user.setRole(signUpRequest.getRole());

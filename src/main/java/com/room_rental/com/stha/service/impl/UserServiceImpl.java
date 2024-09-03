@@ -1,6 +1,5 @@
 package com.room_rental.com.stha.service.impl;
 
-import com.room_rental.com.stha.DTO.UserRequestDTO;
 import com.room_rental.com.stha.DTO.UserResponseDTO;
 import com.room_rental.com.stha.models.User;
 import com.room_rental.com.stha.repository.UserRepository;
