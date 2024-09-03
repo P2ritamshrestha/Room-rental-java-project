@@ -4,7 +4,6 @@ import com.room_rental.com.stha.DTO.JwtAuthenticationResponse;
 import com.room_rental.com.stha.DTO.RefreshTokenRequest;
 import com.room_rental.com.stha.DTO.SignInRequest;
 import com.room_rental.com.stha.DTO.SignUpRequest;
-import com.room_rental.com.stha.models.Role;
 import com.room_rental.com.stha.models.User;
 import com.room_rental.com.stha.repository.UserRepository;
 import com.room_rental.com.stha.service.AuthenticationService;
@@ -28,19 +27,19 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final JwtService jwtService;
 
     public User signUp(SignUpRequest signUpRequest) {
-        User user = new User();
-        user.setFullName(signUpRequest.getFullName());
-        user.setEmail(signUpRequest.getEmail());
-        user.setUsername(signUpRequest.getUsername());
-        user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
+        User user = User.builder()
+            .fullName(signUpRequest.getFullName())
+            .email(signUpRequest.getEmail())
+            .username(signUpRequest.getUsername())
+            .password(passwordEncoder.encode(signUpRequest.getPassword()))
+            .phoneNumber(signUpRequest.getPhoneNumber())
+            .address(signUpRequest.getAddress())
+            .role(signUpRequest.getRole())
+            .build();
+
         if (Objects.equals(signUpRequest.getPassword(), signUpRequest.getConfirmPassword())) {
             user.setConfirmPassword(passwordEncoder.encode(signUpRequest.getConfirmPassword()));
-        } else {
-            throw new IllegalArgumentException("Passwords do not match.");
         }
-        user.setAddress(signUpRequest.getAddress());
-        user.setPhoneNumber(signUpRequest.getPhoneNumber());
-        user.setRole(signUpRequest.getRole());
         userRepository.save(user);
         return user;
     }

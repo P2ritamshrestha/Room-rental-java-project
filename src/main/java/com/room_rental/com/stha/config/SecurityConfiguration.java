@@ -37,10 +37,6 @@ public class SecurityConfiguration {
                         .requestMatchers("api/v1/landlord").hasAuthority(Role.LANDLORD.name())
                         .requestMatchers("api/v1/renter").hasAuthority(Role.RENTER.name())
                         .anyRequest().authenticated())
-                .exceptionHandling(exceptionHandling -> exceptionHandling
-                        .authenticationEntryPoint(authenticationEntryPoint())
-                        .accessDeniedHandler(accessDeniedHandler())
-                )
                 .sessionManagement(manager->manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(
                         jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class
@@ -66,18 +62,18 @@ public class SecurityConfiguration {
 
     }
 
-
-    @Bean
-    public AuthenticationEntryPoint authenticationEntryPoint() {
-        return (request, response, authException) -> {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
-        };
-    }
-
-    @Bean
-    public AccessDeniedHandler accessDeniedHandler() {
-        return (request, response, accessDeniedException) -> {
-            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden");
-        };
-    }
+//
+//    @Bean
+//    public AuthenticationEntryPoint authenticationEntryPoint() {
+//        return (request, response, authException) -> {
+//            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+//        };
+//    }
+//
+//    @Bean
+//    public AccessDeniedHandler accessDeniedHandler() {
+//        return (request, response, accessDeniedException) -> {
+//            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden");
+//        };
+//    }
 }
