@@ -1,14 +1,13 @@
 package com.room_rental.com.stha.service.impl;
 
-import com.room_rental.com.stha.DTO.JwtAuthenticationResponse;
-import com.room_rental.com.stha.DTO.RefreshTokenRequest;
-import com.room_rental.com.stha.DTO.SignInRequest;
-import com.room_rental.com.stha.DTO.SignUpRequest;
+import com.room_rental.com.stha.DTO.*;
+import com.room_rental.com.stha.exception.PasswordMismatchException;
 import com.room_rental.com.stha.models.User;
 import com.room_rental.com.stha.repository.UserRepository;
 import com.room_rental.com.stha.service.AuthenticationService;
 import com.room_rental.com.stha.service.JwtService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -16,7 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
-import java.util.Objects;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Service
@@ -36,10 +35,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             .address(signUpRequest.getAddress())
             .role(signUpRequest.getRole())
             .build();
-
-        if (Objects.equals(signUpRequest.getPassword(), signUpRequest.getConfirmPassword())) {
-            user.setConfirmPassword(passwordEncoder.encode(signUpRequest.getConfirmPassword()));
-        }
         userRepository.save(user);
         return user;
     }
@@ -71,6 +66,21 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             return jwtAuthenticationResponse;
         }
         return null;
+    }
+
+    @Override
+    public void changePassword(ChangePasswordDTO changePasswordDTO, String id) {
+
+        User user= userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        if(passwordEncoder.matches(changePasswordDTO.getCurrentPassword(), user.getPassword())){
+
+            if (!changePasswordDTO.getNewPassword().equals(changePasswordDTO.getConfirmPassword())) {
+                throw new PasswordMismatchException("New password and confirm password do not match");
+            }
+            user.setPassword(passwordEncoder.encode(changePasswordDTO.getNewPassword()));
+            userRepository.save(user);
+        }else
+            throw new PasswordMismatchException("current password do not match");
     }
 
 }
