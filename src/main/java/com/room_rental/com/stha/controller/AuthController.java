@@ -6,9 +6,15 @@ import com.room_rental.com.stha.DTO.SignInRequest;
 import com.room_rental.com.stha.DTO.SignUpRequest;
 import com.room_rental.com.stha.models.User;
 import com.room_rental.com.stha.service.AuthenticationService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -18,9 +24,18 @@ public class AuthController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/signUp")
-    public ResponseEntity<User> signUp(@RequestBody SignUpRequest sign) {
-        return ResponseEntity.ok(authenticationService.signUp(sign));
+    public ResponseEntity<?> signUp(@RequestBody @Valid SignUpRequest signUpRequest) {
+
+        if (!signUpRequest.getPassword().equals(signUpRequest.getConfirmPassword())) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Passwords do not match");
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
+        User newUser = authenticationService.signUp(signUpRequest);
+        return ResponseEntity.ok(newUser);
     }
+
+
     @PostMapping("/signIn")
     public ResponseEntity<JwtAuthenticationResponse> signIn(@RequestBody SignInRequest signInRequest) {
         return ResponseEntity.ok(authenticationService.signIn(signInRequest));
