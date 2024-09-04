@@ -21,5 +21,4 @@ public class UserController {
         List<UserResponseDTO> userResponseDTO = userService.getUsers();
         return new ResponseEntity<>(userResponseDTO, HttpStatus.OK);
     }
-
 }

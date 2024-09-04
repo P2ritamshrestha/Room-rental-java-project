@@ -1,7 +1,9 @@
 package com.room_rental.com.stha.advice;
 
 import com.room_rental.com.stha.exception.PasswordMismatchException;
+import com.room_rental.com.stha.exception.RoomRentalException;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -30,6 +32,18 @@ public class GlobalExceptionHandler extends Throwable {
         errorMap.put("error", ex.getMessage());
         return errorMap;
     }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler( RoomRentalException.class )
+    public Map<String, String> handleRoomRentalException(RoomRentalException ex) {
+        Map<String, String> errorMap = new HashMap<>();
+        errorMap.put("error", ex.getMessage());
+        errorMap.put("abc", ex.getMessage());
+        return errorMap;
+    }
+
+
+
 
 
 }

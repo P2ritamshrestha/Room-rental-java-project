@@ -1,6 +1,7 @@
 package com.room_rental.com.stha.service.impl;
 
 import com.room_rental.com.stha.DTO.UserResponseDTO;
+import com.room_rental.com.stha.exception.RoomRentalException;
 import com.room_rental.com.stha.models.User;
 import com.room_rental.com.stha.repository.UserRepository;
 import com.room_rental.com.stha.service.UserService;
@@ -32,6 +33,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserResponseDTO> getUsers() {
         List<User> users = userRepository.findAll();
+        if(!users.isEmpty()){
+            throw new RoomRentalException("User not found");
+        }
         UserResponseDTO userResponseDTO = new UserResponseDTO();
          return users.stream().map(user -> {
             userResponseDTO.setFullName(user.getFullName());
