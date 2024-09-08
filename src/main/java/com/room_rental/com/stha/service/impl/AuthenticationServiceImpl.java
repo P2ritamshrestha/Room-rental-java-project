@@ -2,20 +2,33 @@ package com.room_rental.com.stha.service.impl;
 
 import com.room_rental.com.stha.DTO.*;
 import com.room_rental.com.stha.exception.PasswordMismatchException;
+import com.room_rental.com.stha.models.Role;
 import com.room_rental.com.stha.models.User;
 import com.room_rental.com.stha.repository.UserRepository;
 import com.room_rental.com.stha.service.AuthenticationService;
 import com.room_rental.com.stha.service.JwtService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -25,7 +38,29 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
 
-    public User signUp(SignUpRequest signUpRequest) {
+    @Value("${Profile.image}")
+    private String path;
+
+    String img = "";
+    public User signUp(SignUpRequest signUpRequest) throws IOException {
+
+//        if(Objects.isNull(signUpRequest.getImage())){
+//            signUpRequest.setImage(getImageAsResource(img));
+//        }
+//
+//
+//        MultipartFile file = signUpRequest.getImage();
+//
+//        String uniqueFileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+//        File newFile = new File(path);
+//        if(!newFile.exists()){
+//            newFile.mkdirs();
+//        }
+//        Path filePath = Paths.get(path, uniqueFileName);
+//
+//        Files.copy(file.getInputStream(), filePath);
+
+
         User user = User.builder()
             .fullName(signUpRequest.getFullName())
             .email(signUpRequest.getEmail())
@@ -33,7 +68,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             .password(passwordEncoder.encode(signUpRequest.getPassword()))
             .phoneNumber(signUpRequest.getPhoneNumber())
             .address(signUpRequest.getAddress())
-            .role(signUpRequest.getRole())
+//            .imageName(uniqueFileName)
+//            .imagePath(filePath.toString())
+            .role(Role.USER)
             .build();
         userRepository.save(user);
         return user;

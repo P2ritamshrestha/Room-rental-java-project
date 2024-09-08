@@ -5,12 +5,15 @@ import com.room_rental.com.stha.models.User;
 import com.room_rental.com.stha.service.AuthenticationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,8 +25,8 @@ public class AuthController {
 
     private final AuthenticationService authenticationService;
 
-    @PostMapping("/signUp")
-    public ResponseEntity<?> signUp(@RequestBody @Valid SignUpRequest signUpRequest) {
+    @PostMapping(value = "/signUp", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> signUp(@RequestBody @Valid SignUpRequest signUpRequest) throws IOException {
 
         if (!signUpRequest.getPassword().equals(signUpRequest.getConfirmPassword())) {
             Map<String, String> errorResponse = new HashMap<>();

@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
@@ -33,6 +34,8 @@ public class SignUpRequest {
     private String confirmPassword;
 
     private String address;
-
-    private Role role;
+//
+//    private Role role;
+//
+//    private MultipartFile image;
 }
