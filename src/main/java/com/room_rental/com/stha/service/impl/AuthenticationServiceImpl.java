@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -26,7 +25,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -41,26 +39,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Value("${Profile.image}")
     private String path;
 
-    String img = "";
-    public User signUp(SignUpRequest signUpRequest) throws IOException {
 
-//        if(Objects.isNull(signUpRequest.getImage())){
-//            signUpRequest.setImage(getImageAsResource(img));
-//        }
-//
-//
-//        MultipartFile file = signUpRequest.getImage();
-//
-//        String uniqueFileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
-//        File newFile = new File(path);
-//        if(!newFile.exists()){
-//            newFile.mkdirs();
-//        }
-//        Path filePath = Paths.get(path, uniqueFileName);
-//
-//        Files.copy(file.getInputStream(), filePath);
-
-
+    public User signUp(SignUpRequest signUpRequest) {
         User user = User.builder()
             .fullName(signUpRequest.getFullName())
             .email(signUpRequest.getEmail())
@@ -68,10 +48,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             .password(passwordEncoder.encode(signUpRequest.getPassword()))
             .phoneNumber(signUpRequest.getPhoneNumber())
             .address(signUpRequest.getAddress())
-//            .imageName(uniqueFileName)
-//            .imagePath(filePath.toString())
             .role(Role.USER)
             .build();
+            user.setImageName("09b18213-73be-4fc0-8b93-d9ddf5eda753_default.jpg");
+            user.setImagePath("image\\profilePicture\\09b18213-73be-4fc0-8b93-d9ddf5eda753_default.jpg");
         userRepository.save(user);
         return user;
     }
@@ -119,5 +99,21 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }else
             throw new PasswordMismatchException("current password do not match");
     }
+
+    public Resource getImageAsResource(String imageName) throws IOException {
+        Path imagePath = Paths.get(path, imageName);
+        if (Files.exists(imagePath)) {
+            Resource resource = new UrlResource(imagePath.toUri());
+            if (resource.exists()) {
+                return resource;
+            } else {
+                throw new FileNotFoundException("Could not find the image " + imageName + " on the server.");
+            }
+        } else {
+            throw new FileNotFoundException("Could not find the image " + imageName + " on the server.");
+        }
+    }
+
+
 
 }

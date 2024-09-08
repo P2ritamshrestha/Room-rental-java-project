@@ -27,23 +27,6 @@ public class RoomUserServiceImpl implements RoomUserService {
 
     private final UserRepository userRepository;
 
-
-    public Resource getImageAsResource(String imageName) throws IOException {
-        Path imagePath = Paths.get(path, imageName);
-        if (Files.exists(imagePath)) {
-            Resource resource = new UrlResource(imagePath.toUri());
-            if (resource.exists()) {
-                return resource;
-            } else {
-                throw new FileNotFoundException("Could not find the image " + imageName + " on the server.");
-            }
-        } else {
-            throw new FileNotFoundException("Could not find the image " + imageName + " on the server.");
-        }
-    }
-
-
-
     public String updateProfile(String id, ProfileDTO profileDTO) {
         User user= userRepository.findById(id).orElseThrow(RuntimeException::new);
         if(Objects.nonNull(profileDTO.getFullName())) {

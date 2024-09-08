@@ -6,6 +6,8 @@ import com.room_rental.com.stha.service.AuthenticationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +27,7 @@ public class AuthController {
 
     private final AuthenticationService authenticationService;
 
-    @PostMapping(value = "/signUp", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping("/signUp")
     public ResponseEntity<?> signUp(@RequestBody @Valid SignUpRequest signUpRequest) throws IOException {
 
         if (!signUpRequest.getPassword().equals(signUpRequest.getConfirmPassword())) {
@@ -52,6 +54,15 @@ public class AuthController {
     public ResponseEntity<?> changePassword(@RequestBody ChangePasswordDTO changePasswordDTO, @PathVariable String id){
         authenticationService.changePassword(changePasswordDTO,id);
         return ResponseEntity.ok("Password changed successfully");
+    }
+
+    @GetMapping("/{imageName}")
+    public ResponseEntity<Resource> getImage(@PathVariable String imageName) throws IOException {
+        Resource imageResource = authenticationService.getImageAsResource(imageName);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + imageName + "\"")
+                .contentType(MediaType.parseMediaType("image/jpeg"))
+                .body(imageResource);
     }
 
 }

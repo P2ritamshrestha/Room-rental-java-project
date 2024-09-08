@@ -34,8 +34,4 @@ public class SignUpRequest {
     private String confirmPassword;
 
     private String address;
-//
-//    private Role role;
-//
-//    private MultipartFile image;
 }
