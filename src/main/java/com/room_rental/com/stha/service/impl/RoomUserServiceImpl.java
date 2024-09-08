@@ -1,21 +1,34 @@
 package com.room_rental.com.stha.service.impl;
 
+import com.room_rental.com.stha.DTO.ChangePasswordDTO;
 import com.room_rental.com.stha.DTO.ProfileDTO;
+import com.room_rental.com.stha.exception.PasswordMismatchException;
 import com.room_rental.com.stha.models.User;
 import com.room_rental.com.stha.repository.UserRepository;
+import com.room_rental.com.stha.service.JwtService;
 import com.room_rental.com.stha.service.RoomUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 
 @RequiredArgsConstructor
@@ -26,20 +39,72 @@ public class RoomUserServiceImpl implements RoomUserService {
     private String path;
 
     private final UserRepository userRepository;
+    private  final JwtService jwtService;
+    private final PasswordEncoder passwordEncoder;
 
-    public String updateProfile(String id, ProfileDTO profileDTO) {
-        User user= userRepository.findById(id).orElseThrow(RuntimeException::new);
-        if(Objects.nonNull(profileDTO.getFullName())) {
-            user.setFullName(profileDTO.getFullName());
-        }
-        if(Objects.nonNull(profileDTO.getEmail())) {
-            user.setEmail(profileDTO.getEmail());
-        }
-        if(Objects.nonNull(profileDTO.getAddress())) {
-            user.setAddress((profileDTO.getAddress()));
+    public User updateProfile(String id, ProfileDTO profileDTO) throws IOException {
+        User user= userRepository.findById(id).orElseThrow(()->new UsernameNotFoundException("User not found"));
+        user.setUsername(profileDTO.getUsername());
+        user.setEmail(profileDTO.getEmail());
+        user.setAddress(profileDTO.getAddress());
+        user.setPhoneNumber(profileDTO.getPhone());
+
+        if(Objects.nonNull(profileDTO.getImage())){
+            MultipartFile file = profileDTO.getImage();
+
+            String uniqueFileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+            File newFile = new File(path);
+            if(!newFile.exists()){
+                newFile.mkdirs();
+            }
+            Path filePath = Paths.get(path, uniqueFileName);
+
+            Files.copy(file.getInputStream(), filePath);
+
+            user.setImageName(uniqueFileName);
+            user.setImagePath(filePath.toString());
         }
         userRepository.save(user);
-        return "Profile updated successfully";
+        return user;
     }
+
+    @Override
+    public User getExtractDetails(String username) {
+        return userRepository.findByUsername(username).orElseThrow(()->new UsernameNotFoundException("User not found"));
+    }
+
+
+    @Override
+    public void changePassword(ChangePasswordDTO changePasswordDTO, String id) {
+
+        User user= userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        if(passwordEncoder.matches(changePasswordDTO.getCurrentPassword(), user.getPassword())){
+
+            if (!changePasswordDTO.getNewPassword().equals(changePasswordDTO.getConfirmPassword())) {
+                throw new PasswordMismatchException("New password and confirm password do not match");
+            }
+            user.setPassword(passwordEncoder.encode(changePasswordDTO.getNewPassword()));
+            userRepository.save(user);
+        }else
+            throw new PasswordMismatchException("current password do not match");
+    }
+
+    public Resource getImageAsResource(String imageName) throws IOException {
+        Path imagePath = Paths.get(path, imageName);
+        if (Files.exists(imagePath)) {
+            Resource resource = new UrlResource(imagePath.toUri());
+            if (resource.exists()) {
+                return resource;
+            } else {
+                throw new FileNotFoundException("Could not find the image " + imageName + " on the server.");
+            }
+        } else {
+            throw new FileNotFoundException("Could not find the image " + imageName + " on the server.");
+        }
+    }
+
+
+
+
 
 }

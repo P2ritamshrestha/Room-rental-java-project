@@ -11,7 +11,5 @@ public interface AuthenticationService {
     User signUp(SignUpRequest signUpRequest);
     JwtAuthenticationResponse signIn(SignInRequest signInRequest);
     JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest);
-    void changePassword(ChangePasswordDTO changePasswordDTO, String id);
-    Resource getImageAsResource(String imageName) throws IOException;
 
 }

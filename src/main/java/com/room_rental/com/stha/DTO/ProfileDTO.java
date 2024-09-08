@@ -1,18 +1,16 @@
 package com.room_rental.com.stha.DTO;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProfileDTO {
     private MultipartFile image;
-    private String fullName;
+    private  String username;
     private String email;
     private String phone;
     private String address;
