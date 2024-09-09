@@ -25,8 +25,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -71,6 +69,11 @@ public class RoomUserServiceImpl implements RoomUserService {
     @Override
     public User getExtractDetails(String username) {
         return userRepository.findByUsername(username).orElseThrow(()->new UsernameNotFoundException("User not found"));
+    }
+
+    @Override
+    public void saveConfirmUser(User user) {
+        userRepository.save(user);
     }
 
 

@@ -3,12 +3,12 @@ package com.room_rental.com.stha.controller;
 import com.room_rental.com.stha.DTO.ChangePasswordDTO;
 import com.room_rental.com.stha.DTO.ProfileDTO;
 import com.room_rental.com.stha.models.User;
+import com.room_rental.com.stha.repository.UserRepository;
 import com.room_rental.com.stha.service.JwtService;
 import com.room_rental.com.stha.service.RoomUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +23,7 @@ import java.util.Map;
 public class RoomUserController {
     private final RoomUserService roomUserService;
     private final JwtService jwtService;
+
 
     @GetMapping("/extract-details")
     public ResponseEntity<?> extractDetailsFromToken(@RequestHeader("Authorization") String token) {

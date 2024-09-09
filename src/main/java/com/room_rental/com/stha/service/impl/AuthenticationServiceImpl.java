@@ -7,7 +7,6 @@ import com.room_rental.com.stha.repository.UserRepository;
 import com.room_rental.com.stha.service.AuthenticationService;
 import com.room_rental.com.stha.service.JwtService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,10 +17,12 @@ import java.util.HashMap;
 @RequiredArgsConstructor
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
+
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+    private final EmailService emailService;
 
     public User signUp(SignUpRequest signUpRequest) {
         User user = User.builder()
@@ -31,11 +32,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             .password(passwordEncoder.encode(signUpRequest.getPassword()))
             .phoneNumber(signUpRequest.getPhoneNumber())
             .address(signUpRequest.getAddress())
+            .isEnabled(false)
             .role(Role.USER)
             .build();
             user.setImageName("09b18213-73be-4fc0-8b93-d9ddf5eda753_default.jpg");
             user.setImagePath("image\\profilePicture\\09b18213-73be-4fc0-8b93-d9ddf5eda753_default.jpg");
         userRepository.save(user);
+        var jwt = jwtService.generateToken(user);
+        emailService.sendConfirmLinkToEmail(signUpRequest.getEmail(), jwt);
         return user;
     }
 
@@ -43,13 +47,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInRequest.getUsername(), signInRequest.getPassword()));
 
         var user = userRepository.findByUsername(signInRequest.getUsername()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        var jwt = jwtService.generateToken(user);
-        var refreshToken = jwtService.generateRefreshToken(new HashMap<>(),user);
+        if((user.isEnabled())) {
+            var jwt = jwtService.generateToken(user);
+            var refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
 
-        JwtAuthenticationResponse jwtAuthenticationResponse= new JwtAuthenticationResponse();
-        jwtAuthenticationResponse.setToken(jwt);
-        jwtAuthenticationResponse.setRefreshToken((String) refreshToken);
-        return jwtAuthenticationResponse;
+            JwtAuthenticationResponse jwtAuthenticationResponse = new JwtAuthenticationResponse();
+            jwtAuthenticationResponse.setToken(jwt);
+            jwtAuthenticationResponse.setRefreshToken((String) refreshToken);
+            return jwtAuthenticationResponse;
+        }else {
+            throw new UsernameNotFoundException("User not verified");
+        }
     }
 
     public JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
@@ -65,5 +73,4 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
         return null;
     }
-
 }

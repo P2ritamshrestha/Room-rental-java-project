@@ -14,4 +14,6 @@ public interface RoomUserService {
     User updateProfile(String id, ProfileDTO profileDTO) throws IOException;
 
     User getExtractDetails(String username);
+
+    void saveConfirmUser(User user);
 }

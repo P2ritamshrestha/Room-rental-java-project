@@ -2,7 +2,10 @@ package com.room_rental.com.stha.controller;
 
 import com.room_rental.com.stha.DTO.*;
 import com.room_rental.com.stha.models.User;
+import com.room_rental.com.stha.repository.UserRepository;
 import com.room_rental.com.stha.service.AuthenticationService;
+import com.room_rental.com.stha.service.JwtService;
+import com.room_rental.com.stha.service.RoomUserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @CrossOrigin(origins = {"http://localhost:5173", "http://localhost:5174"})
 @RestController
@@ -19,6 +23,9 @@ import java.util.Map;
 public class AuthController {
 
     private final AuthenticationService authenticationService;
+    private final JwtService jwtService;
+    private final RoomUserService roomUserService;
+
 
     @PostMapping("/signUp")
     public ResponseEntity<?> signUp(@RequestBody @Valid SignUpRequest signUpRequest) throws IOException {
@@ -32,6 +39,20 @@ public class AuthController {
         return ResponseEntity.ok(newUser);
     }
 
+    @GetMapping("/confirm")
+    public ResponseEntity<String> confirmRegistration(@RequestParam("token") String token) {
+        token = token.startsWith("Bearer ") ? token.substring(7) : token;
+
+        String username = jwtService.extractUserName(token);
+        if(Objects.nonNull(username)) {
+            User user = roomUserService.getExtractDetails(username);
+            user.setEnabled(true);
+            roomUserService.saveConfirmUser(user);
+            return ResponseEntity.ok("Registration confirmed! Your account is now active.");
+        } else {
+            return ResponseEntity.badRequest().body("Invalid or expired token.");
+        }
+    }
 
     @PostMapping("/signIn")
     public ResponseEntity<JwtAuthenticationResponse> signIn(@RequestBody SignInRequest signInRequest) {
