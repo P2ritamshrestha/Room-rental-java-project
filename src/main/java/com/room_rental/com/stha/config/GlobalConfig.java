@@ -14,7 +14,8 @@ public class GlobalConfig {
             registry.addMapping("/**")
                     .allowedOrigins("http://localhost:5173", "http://localhost:5174") // React app URL
                     .allowedMethods("GET", "POST", "PUT", "DELETE")
-                    .allowedHeaders("*");
+                    .allowedHeaders("*")
+                    .allowCredentials(true);
         }
     }
 
