@@ -16,6 +16,7 @@ public class SignUpRequest {
     @NotBlank(message = "Full name not blank")
     private String fullName;
 
+    @NotBlank
     @Email(message = "Invalid email")
     @UniqueEmail
     private String email;
@@ -24,6 +25,7 @@ public class SignUpRequest {
     @UniqueUsername
     private String username;
 
+    @NotBlank
     @Pattern(regexp = "^\\d{10}$", message = "Phone number must be 10 digits")
     private String phoneNumber;
 
@@ -33,5 +35,6 @@ public class SignUpRequest {
     @NotBlank(message = "Confirm password not blank")
     private String confirmPassword;
 
+    @NotBlank
     private String address;
 }
