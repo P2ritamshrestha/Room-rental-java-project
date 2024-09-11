@@ -22,7 +22,7 @@ public class EmailService {
         helper.setSubject("Mail Aayo !! Mail Aayo");
 
         // HTML content for the email
-        String emailContent = "<p>Oii vai login garna man vaya tyo link ma thich <a href=\"" + confirmationUrl + "\">Muji kata khojxas yai ho link</a>.</p>";
+        String emailContent = "<p>Your Confirmation Link is here:   <a href=\"" + confirmationUrl + "\">Click Here</a>.</p>";
         helper.setText(emailContent, true);  // 'true' indicates that the content is HTML
 
         mailSender.send(mimeMessage);
