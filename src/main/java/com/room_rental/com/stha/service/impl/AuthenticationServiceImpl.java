@@ -1,6 +1,7 @@
 package com.room_rental.com.stha.service.impl;
 
 import com.room_rental.com.stha.DTO.*;
+import com.room_rental.com.stha.exception.RoomRentalException;
 import com.room_rental.com.stha.models.Role;
 import com.room_rental.com.stha.models.User;
 import com.room_rental.com.stha.repository.UserRepository;
@@ -10,6 +11,7 @@ import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -49,21 +51,37 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     public JwtAuthenticationResponse signIn(SignInRequest signInRequest) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInRequest.getUsername(), signInRequest.getPassword()));
+        try {
+            // Authenticate the user
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(signInRequest.getUsername(), signInRequest.getPassword())
+            );
 
-        var user = userRepository.findByUsername(signInRequest.getUsername()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        if((user.isActive())) {
-            var jwt = jwtService.generateToken(user);
-            var refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
+            // Find the user in the database
+            var user = userRepository.findByUsername(signInRequest.getUsername())
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-            JwtAuthenticationResponse jwtAuthenticationResponse = new JwtAuthenticationResponse();
-            jwtAuthenticationResponse.setToken(jwt);
-            jwtAuthenticationResponse.setRefreshToken((String) refreshToken);
-            return jwtAuthenticationResponse;
-        }else {
-            throw new UsernameNotFoundException("User not verified");
+            // Check if the user is active
+            if (user.isActive()) {
+                // Generate JWT and refresh token
+                var jwt = jwtService.generateToken(user);
+                var refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
+
+                // Create response with tokens
+                JwtAuthenticationResponse jwtAuthenticationResponse = new JwtAuthenticationResponse();
+                jwtAuthenticationResponse.setToken(jwt);
+                jwtAuthenticationResponse.setRefreshToken((String)refreshToken);
+                return jwtAuthenticationResponse;
+            } else {
+                // If the user is not verified
+                throw new RoomRentalException("User not verified");
+            }
+        } catch (AuthenticationException ex) {
+            // Handle invalid username or password
+            throw new RoomRentalException("Invalid username or password");
         }
     }
+
 
     public JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
         String username= jwtService.extractUserName(refreshTokenRequest.getToken());

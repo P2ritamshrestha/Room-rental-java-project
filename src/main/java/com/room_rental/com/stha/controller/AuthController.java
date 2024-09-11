@@ -2,7 +2,6 @@ package com.room_rental.com.stha.controller;
 
 import com.room_rental.com.stha.DTO.*;
 import com.room_rental.com.stha.models.User;
-import com.room_rental.com.stha.repository.UserRepository;
 import com.room_rental.com.stha.service.AuthenticationService;
 import com.room_rental.com.stha.service.JwtService;
 import com.room_rental.com.stha.service.RoomUserService;
@@ -10,12 +9,8 @@ import com.room_rental.com.stha.service.impl.AuthenticationServiceImpl;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.core.user.OAuth2User;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
