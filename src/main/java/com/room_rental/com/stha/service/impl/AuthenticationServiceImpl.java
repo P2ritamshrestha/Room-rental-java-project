@@ -6,6 +6,7 @@ import com.room_rental.com.stha.models.User;
 import com.room_rental.com.stha.repository.UserRepository;
 import com.room_rental.com.stha.service.AuthenticationService;
 import com.room_rental.com.stha.service.JwtService;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,7 +29,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final JwtService jwtService;
     private final EmailService emailService;
 
-    public User signUp(SignUpRequest signUpRequest) {
+    public User signUp(SignUpRequest signUpRequest) throws MessagingException {
         User user = User.builder()
             .fullName(signUpRequest.getFullName())
             .email(signUpRequest.getEmail())

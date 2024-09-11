@@ -1,24 +1,30 @@
 package com.room_rental.com.stha.service.impl;
 
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-
 @Service
 public class EmailService {
 
     @Autowired
     private JavaMailSender mailSender;
 
-    public void sendConfirmLinkToEmail(String to, String token) {
+    public void sendConfirmLinkToEmail(String to, String token) throws MessagingException {
         String confirmationUrl = "http://localhost:5173/login?token=" + token;
 
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(to);
-        message.setSubject("Confirm your registration");
-        String emailContent = "Please <a href=\"" + confirmationUrl + "\">click here</a> to confirm your registration.";
-        message.setText(emailContent);
-        mailSender.send(message);
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+
+        helper.setTo(to);
+        helper.setSubject("Mail Aayo !! Mail Aayo");
+
+        // HTML content for the email
+        String emailContent = "<p>Oii vai login garna man vaya tyo link ma thich <a href=\"" + confirmationUrl + "\">Muji kata khojxas yai ho link</a>.</p>";
+        helper.setText(emailContent, true);  // 'true' indicates that the content is HTML
+
+        mailSender.send(mimeMessage);
     }
 }

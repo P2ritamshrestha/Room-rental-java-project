@@ -7,6 +7,7 @@ import com.room_rental.com.stha.service.AuthenticationService;
 import com.room_rental.com.stha.service.JwtService;
 import com.room_rental.com.stha.service.RoomUserService;
 import com.room_rental.com.stha.service.impl.AuthenticationServiceImpl;
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -35,7 +36,7 @@ public class AuthController {
 
 
     @PostMapping("/signUp")
-    public ResponseEntity<?> signUp(@RequestBody @Valid SignUpRequest signUpRequest) throws IOException {
+    public ResponseEntity<?> signUp(@RequestBody @Valid SignUpRequest signUpRequest) throws IOException, MessagingException {
 
         if (!signUpRequest.getPassword().equals(signUpRequest.getConfirmPassword())) {
             Map<String, String> errorResponse = new HashMap<>();
