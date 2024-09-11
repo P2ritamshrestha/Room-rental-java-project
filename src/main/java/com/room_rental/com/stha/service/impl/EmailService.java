@@ -12,12 +12,13 @@ public class EmailService {
     private JavaMailSender mailSender;
 
     public void sendConfirmLinkToEmail(String to, String token) {
-        String confirmationUrl = "http://xxx.com/api/auth/confirm?token=" + token;
+        String confirmationUrl = "http://localhost:5173/login?token=" + token;
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
         message.setSubject("Confirm your registration");
-        message.setText("Click the link below to confirm your registration: \n" + confirmationUrl);
+        String emailContent = "Please <a href=\"" + confirmationUrl + "\">click here</a> to confirm your registration.";
+        message.setText(emailContent);
         mailSender.send(message);
     }
 }

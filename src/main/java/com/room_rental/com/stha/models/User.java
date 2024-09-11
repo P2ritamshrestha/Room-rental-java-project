@@ -25,7 +25,7 @@ public class User implements UserDetails {
     private String phoneNumber;
     private String password;
     private String address;
-    private boolean isEnabled;
+    private boolean isActive;
     private String imagePath;
     private String imageName;
     private Role role;

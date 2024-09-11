@@ -6,9 +6,15 @@ import com.room_rental.com.stha.repository.UserRepository;
 import com.room_rental.com.stha.service.AuthenticationService;
 import com.room_rental.com.stha.service.JwtService;
 import com.room_rental.com.stha.service.RoomUserService;
+import com.room_rental.com.stha.service.impl.AuthenticationServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -25,6 +31,7 @@ public class AuthController {
     private final AuthenticationService authenticationService;
     private final JwtService jwtService;
     private final RoomUserService roomUserService;
+    private final AuthenticationServiceImpl authenticationServiceImpl;
 
 
     @PostMapping("/signUp")
@@ -46,7 +53,7 @@ public class AuthController {
         String username = jwtService.extractUserName(token);
         if(Objects.nonNull(username)) {
             User user = roomUserService.getExtractDetails(username);
-            user.setEnabled(true);
+            user.setActive(true);
             roomUserService.saveConfirmUser(user);
             return ResponseEntity.ok("Registration confirmed! Your account is now active.");
         } else {
@@ -62,6 +69,12 @@ public class AuthController {
     @PostMapping("/refresh")
     public ResponseEntity<JwtAuthenticationResponse> refresh(@RequestBody RefreshTokenRequest refreshTokenRequest){
         return ResponseEntity.ok(authenticationService.refreshToken(refreshTokenRequest));
+    }
+
+    // test purpose
+    @GetMapping()
+    public String msgDisplay(){
+        return "This msg from after Google login";
     }
 
 }

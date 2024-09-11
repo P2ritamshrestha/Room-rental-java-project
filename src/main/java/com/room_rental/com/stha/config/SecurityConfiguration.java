@@ -2,6 +2,7 @@ package com.room_rental.com.stha.config;
 
 import com.room_rental.com.stha.models.Role;
 import com.room_rental.com.stha.service.UserService;
+import com.room_rental.com.stha.service.impl.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,21 +23,34 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfiguration {
+
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final UserService userService;
+    private final CustomOAuth2UserService customOAuth2UserService;  // OAuth2 User Service for handling user info
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(request-> request.requestMatchers("/api/v1/auth/**")
-                        .permitAll()
-                        .requestMatchers("api/admin/**").hasAuthority(Role.ADMIN.name())
-                        .requestMatchers("api/user/**").hasAuthority(Role.USER.name())
-                        .anyRequest().authenticated())
-                .sessionManagement(manager->manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(authenticationProvider()).addFilterBefore(
-                        jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class
-                );
+        http
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(requests -> requests
+                        .requestMatchers("/api/v1/auth/**", "/login", "/oauth2/**").permitAll()
+                        .requestMatchers("/api/admin/**").hasAuthority(Role.ADMIN.name())
+                        .requestMatchers("/api/user/**").hasAuthority(Role.USER.name())
+                        .anyRequest().authenticated()
+                )
+                .oauth2Login(oauth2 -> oauth2
+                        .defaultSuccessUrl("http://localhost:5173/", true)  // Changed success URL for OAuth2 login
+                        .failureUrl("/login?error=true")
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(customOAuth2UserService)
+                        )
+                )
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                )
+                .authenticationProvider(authenticationProvider())
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 
@@ -50,28 +64,11 @@ public class SecurityConfiguration {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder();  // Use BCrypt for password encoding
     }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
-
+        return authenticationConfiguration.getAuthenticationManager();  // Authentication manager bean
     }
-
-//
-//    @Bean
-//    public AuthenticationEntryPoint authenticationEntryPoint() {
-//        return (request, response, authException) -> {
-//            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
-//        };
-//    }
-//
-//    @Bean
-//    public AccessDeniedHandler accessDeniedHandler() {
-//        return (request, response, accessDeniedException) -> {
-//            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden");
-//        };
-//    }
-
 }
