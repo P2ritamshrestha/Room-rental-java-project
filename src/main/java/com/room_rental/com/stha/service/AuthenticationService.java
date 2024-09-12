@@ -9,7 +9,7 @@ import org.springframework.core.io.Resource;
 import java.io.IOException;
 
 public interface AuthenticationService {
-    User signUp(SignUpRequest signUpRequest) throws MessagingException;
+    void signUp(SignUpRequest signUpRequest) throws MessagingException;
     JwtAuthenticationResponse signIn(SignInRequest signInRequest);
     JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest);
 

@@ -18,7 +18,6 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -31,7 +30,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final JwtService jwtService;
     private final EmailService emailService;
 
-    public User signUp(SignUpRequest signUpRequest) throws MessagingException {
+    public void signUp(SignUpRequest signUpRequest) throws MessagingException {
         User user = User.builder()
             .fullName(signUpRequest.getFullName())
             .email(signUpRequest.getEmail())
@@ -47,7 +46,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         userRepository.save(user);
         var jwt = jwtService.generateToken(user);
         emailService.sendConfirmLinkToEmail(signUpRequest.getEmail(), jwt);
-        return user;
+
     }
 
     public JwtAuthenticationResponse signIn(SignInRequest signInRequest) {
@@ -99,7 +98,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 
 
-    public User processOAuthPostLogin(OAuth2AuthenticationToken authenticationToken) {
+    public void processOAuthPostLogin(OAuth2AuthenticationToken authenticationToken) {
         OAuth2User oauth2User = authenticationToken.getPrincipal();
         String email = oauth2User.getAttribute("email");
         String name = oauth2User.getAttribute("name");
@@ -111,13 +110,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             User newUser = new User();
             newUser.setEmail(email);
             newUser.setFullName(name);
+            newUser.setActive(true);
+            newUser.setUsername(email);
             newUser.setRole(Role.USER); // Default role for OAuth users
 
             userRepository.save(newUser);  // Save the new user
-            return newUser;
         } else {
             // Return existing user
-            return existingUser.get();
+            existingUser.get();
         }
     }
 

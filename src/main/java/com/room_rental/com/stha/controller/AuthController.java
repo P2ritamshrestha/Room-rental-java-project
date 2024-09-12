@@ -38,8 +38,8 @@ public class AuthController {
             errorResponse.put("error", "Passwords do not match");
             return ResponseEntity.badRequest().body(errorResponse);
         }
-        User newUser = authenticationService.signUp(signUpRequest);
-        return ResponseEntity.ok(newUser);
+        authenticationService.signUp(signUpRequest);
+        return ResponseEntity.ok("User registered successfully");
     }
 
     @GetMapping("/confirm")
@@ -65,12 +65,6 @@ public class AuthController {
     @PostMapping("/refresh")
     public ResponseEntity<JwtAuthenticationResponse> refresh(@RequestBody RefreshTokenRequest refreshTokenRequest){
         return ResponseEntity.ok(authenticationService.refreshToken(refreshTokenRequest));
-    }
-
-    // test purpose
-    @GetMapping()
-    public String msgDisplay(){
-        return "This msg from after Google login";
     }
 
 }
