@@ -29,24 +29,4 @@ public class UserServiceImpl implements UserService {
             }
         };
     }
-
-    @Override
-    public List<UserResponseDTO> getUsers() {
-        List<User> users = userRepository.findAll();
-        if(!users.isEmpty()){
-            throw new RoomRentalException("User not found");
-        }
-        UserResponseDTO userResponseDTO = new UserResponseDTO();
-         return users.stream().map(user -> {
-            userResponseDTO.setFullName(user.getFullName());
-            userResponseDTO.setPhoneNumber(user.getPhoneNumber());
-            userResponseDTO.setAddress(user.getAddress());
-            userResponseDTO.setUsername(user.getUsername());
-            userResponseDTO.setRole(user.getRole());
-            userResponseDTO.setId(user.getId());
-            userResponseDTO.setEmail(user.getEmail());
-            userResponseDTO.setPhoneNumber(user.getPhoneNumber());
-            return userResponseDTO;
-        }).toList();
-    }
 }

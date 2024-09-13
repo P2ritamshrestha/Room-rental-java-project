@@ -2,7 +2,9 @@ package com.room_rental.com.stha.config;
 
 import com.room_rental.com.stha.models.Role;
 import com.room_rental.com.stha.service.UserService;
+import com.room_rental.com.stha.service.impl.CustomOAuth2SuccessHandler;
 import com.room_rental.com.stha.service.impl.CustomOAuth2UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,30 +28,36 @@ public class SecurityConfiguration {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final UserService userService;
-    private final CustomOAuth2UserService customOAuth2UserService;  // OAuth2 User Service for handling user info
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final CustomOAuth2SuccessHandler customOAuth2SuccessHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/api/v1/auth/**", "/login", "/oauth2/**").permitAll()
-                        .requestMatchers("/api/admin/**").hasAuthority(Role.ADMIN.name())
-                        .requestMatchers("/api/user/**").hasAuthority(Role.USER.name())
-                        .anyRequest().authenticated()
+                        .requestMatchers("/api/v1/auth/**", "/login", "/oauth2/**").permitAll()  // Public endpoints
+                        .requestMatchers("/api/admin/**").hasAuthority(Role.ADMIN.name())         // Admin endpoints
+                        .requestMatchers("/api/user/**").hasAuthority(Role.USER.name())           // User endpoints
+                        .anyRequest().authenticated()                                             // All other endpoints require authentication
                 )
                 .oauth2Login(oauth2 -> oauth2
-                        .defaultSuccessUrl("http://localhost:5173/", true)  // Changed success URL for OAuth2 login
+                        .successHandler(customOAuth2SuccessHandler)
                         .failureUrl("/login?error=true")
-//                        .userInfoEndpoint(userInfo -> userInfo
-//                                .userService(customOAuth2UserService)
-//                        )
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(customOAuth2UserService)
+                        )
                 )
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)  // Enforce stateless session
                 )
                 .authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+                        })
+                );
 
         return http.build();
     }
@@ -64,11 +72,12 @@ public class SecurityConfiguration {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();  // Use BCrypt for password encoding
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();  // Authentication manager bean
+        return authenticationConfiguration.getAuthenticationManager();
     }
 }
+

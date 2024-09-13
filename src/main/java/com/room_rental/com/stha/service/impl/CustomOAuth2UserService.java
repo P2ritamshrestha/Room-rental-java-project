@@ -9,6 +9,8 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+
 @Service
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
@@ -34,7 +36,11 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         );
 
         // Save or update user in the database
-        authenticationServiceImpl.processOAuthPostLogin(authenticationToken);
+        try {
+            authenticationServiceImpl.processOAuthPostLogin(authenticationToken);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         return oauth2User;
     }

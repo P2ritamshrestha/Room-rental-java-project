@@ -1,7 +1,5 @@
 package com.room_rental.com.stha.controller;
 
-import com.room_rental.com.stha.DTO.RoomRequestDTO;
-import com.room_rental.com.stha.models.Room;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

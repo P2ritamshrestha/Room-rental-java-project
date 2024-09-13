@@ -32,9 +32,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // Check if the Authorization header is missing or does not start with "Bearer "
         if (StringUtils.isEmpty(authHeader) || !org.apache.commons.lang3.StringUtils.startsWith(authHeader, "Bearer ")) {
-            filterChain.doFilter(request, response);  // Skip the filter if no valid Authorization header is present
+            // Instead of skipping, we now proceed without setting authentication
+            // This will allow Spring Security to deny access to protected resources
+            filterChain.doFilter(request, response);
             return;
         }
+
         jwt = authHeader.substring(7);
         username = jwtService.extractUserName(jwt);
 
@@ -56,5 +59,4 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // Proceed to the next filter in the chain
         filterChain.doFilter(request, response);
     }
-
 }

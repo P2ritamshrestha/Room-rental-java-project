@@ -10,6 +10,4 @@ public interface UserService {
 
      UserDetailsService userDetailsService();
 
-    List<UserResponseDTO> getUsers();
-
 }

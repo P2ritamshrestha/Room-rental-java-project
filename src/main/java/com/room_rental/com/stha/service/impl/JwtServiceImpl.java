@@ -17,8 +17,8 @@ import java.util.function.Function;
 public class JwtServiceImpl implements JwtService {
 
 
-    public String generateToken(UserDetails userDetails) {
-        return Jwts.builder().setSubject(userDetails.getUsername())
+    public String generateToken(String email) {
+        return Jwts.builder().setSubject(email)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 10000 * 60 * 24))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)

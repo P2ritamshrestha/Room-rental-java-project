@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:5174"})
 @RestController
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
@@ -57,6 +58,12 @@ public class RoomUserController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + imageName + "\"")
                 .contentType(MediaType.parseMediaType("image/jpeg"))
                 .body(imageResource);
+    }
+
+
+    @GetMapping("/test")
+    public String test(){
+        return "only user display text";
     }
 
 }
