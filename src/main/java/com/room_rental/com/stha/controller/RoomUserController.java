@@ -60,10 +60,4 @@ public class RoomUserController {
                 .body(imageResource);
     }
 
-
-    @GetMapping("/test")
-    public String test(){
-        return "only user display text";
-    }
-
 }

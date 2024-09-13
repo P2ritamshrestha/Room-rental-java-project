@@ -36,6 +36,7 @@ public class Room {
     private Boolean negotiable;
 
     private String imageFileUrl;
+    private String imageFileName;
 
     // Amenities:
     private LocalDate dateOfBuild;

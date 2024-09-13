@@ -1,23 +1,27 @@
 package com.room_rental.com.stha.controller;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.room_rental.com.stha.DTO.ReviewDTO;
+import com.room_rental.com.stha.models.User;
+import com.room_rental.com.stha.service.JwtService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @CrossOrigin(origins = {"http://localhost:5173", "http://localhost:5174"})
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/room")
 public class RoomController {
 
-//
-//    private Room saveRoom(RoomRequestDTO roomRequestDTO) {
-//        Room room= Room.builder().build();
-//        return room;
-//    }
+    private final JwtService jwtService;
 
     @GetMapping()
     public String getMsg(){
         return "this is after login room page";
     }
+
+
 }

@@ -38,7 +38,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/api/v1/auth/**", "/login", "/oauth2/**").permitAll()  // Public endpoints
                         .requestMatchers("/api/admin/**").hasAuthority(Role.ADMIN.name())         // Admin endpoints
-                        .requestMatchers("/api/user/**").hasAuthority(Role.USER.name())           // User endpoints
+                        .requestMatchers("/api/user/**","/api/review/**").hasAuthority(Role.USER.name())           // User endpoints
                         .anyRequest().authenticated()                                             // All other endpoints require authentication
                 )
                 .oauth2Login(oauth2 -> oauth2
