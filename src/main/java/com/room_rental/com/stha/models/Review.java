@@ -15,7 +15,7 @@ public class Review {
     @Id
     private String id;
     private String title;
-    private String description;
+    private String message;
     private String imagePath;
     private String imageName;
     private String activity;

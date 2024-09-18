@@ -28,7 +28,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
 
-    @Value("${Profile.image}")
+    @Value("${Review.image}")
     private String path;
 
     @Override
@@ -36,7 +36,7 @@ public class ReviewServiceImpl implements ReviewService {
         User user = userRepository.findByUsername(username).get();
         Review review = Review.builder()
                 .title(reviewDTO.getTitle())
-                .description(reviewDTO.getDescription())
+                .message(reviewDTO.getMessage())
                 .activity(reviewDTO.getActivity())
                 .rating(reviewDTO.getRating())
                 .user(user)
@@ -70,7 +70,7 @@ public class ReviewServiceImpl implements ReviewService {
         Review review= reviewRepository.findById(id).orElseThrow(()->new RoomRentalException("Review not found"));
         ReviewDTO reviewDTO = ReviewDTO.builder()
                 .title(review.getTitle())
-                .description(review.getDescription())
+                .message(review.getMessage())
                 .activity(review.getActivity())
                 .rating(review.getRating())
                 .build();

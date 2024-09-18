@@ -11,12 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -42,7 +39,6 @@ public class RoomUserServiceImpl implements RoomUserService {
 
     public User updateProfile(String id, ProfileDTO profileDTO) throws IOException {
         User user= userRepository.findById(id).orElseThrow(()->new UsernameNotFoundException("User not found"));
-        user.setUsername(profileDTO.getUsername());
         user.setEmail(profileDTO.getEmail());
         user.setAddress(profileDTO.getAddress());
         user.setPhoneNumber(profileDTO.getPhone());
@@ -105,9 +101,5 @@ public class RoomUserServiceImpl implements RoomUserService {
             throw new FileNotFoundException("Could not find the image " + imageName + " on the server.");
         }
     }
-
-
-
-
 
 }

@@ -3,7 +3,6 @@ package com.room_rental.com.stha.controller;
 import com.room_rental.com.stha.DTO.ChangePasswordDTO;
 import com.room_rental.com.stha.DTO.ProfileDTO;
 import com.room_rental.com.stha.models.User;
-import com.room_rental.com.stha.repository.UserRepository;
 import com.room_rental.com.stha.service.JwtService;
 import com.room_rental.com.stha.service.RoomUserService;
 import lombok.RequiredArgsConstructor;
@@ -59,5 +58,4 @@ public class RoomUserController {
                 .contentType(MediaType.parseMediaType("image/jpeg"))
                 .body(imageResource);
     }
-
 }

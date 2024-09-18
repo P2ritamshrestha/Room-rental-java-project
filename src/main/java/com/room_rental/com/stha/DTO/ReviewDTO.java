@@ -18,7 +18,7 @@ public class ReviewDTO {
     @NotBlank
     @Min(0)
     @Max(160)
-    private String description;
+    private String message;
     private MultipartFile image;
     @NotBlank
     private String activity;

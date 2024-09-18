@@ -116,6 +116,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String email = oauth2User.getAttribute("email");
         String name = oauth2User.getAttribute("name");
         String pictureUrl = oauth2User.getAttribute("picture");
+        String firstName = name.split(" ")[0];
 
         User user = userRepository.findByEmail(email)
                 .orElseGet(() -> {
@@ -123,7 +124,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     newUser.setEmail(email);
                     newUser.setFullName(name);
                     newUser.setActive(true);
-                    newUser.setUsername(email);
+                    newUser.setUsername(firstName);
                     newUser.setRole(Role.USER);
                     return newUser;
                 });
@@ -134,10 +135,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             Path uploadPath = Paths.get(path);
             Path filePath = uploadPath.resolve(uniqueFileName);
 
-            // Create directories if they don't exist
             Files.createDirectories(uploadPath);
-
-            // Download and save the image
             try (InputStream in = new URL(pictureUrl).openStream()) {
                 Files.copy(in, filePath, StandardCopyOption.REPLACE_EXISTING);
             }
