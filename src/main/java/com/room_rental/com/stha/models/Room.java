@@ -8,6 +8,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.validation.constraints.Min;
 import java.time.LocalDate;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -32,6 +33,8 @@ public class Room {
     @NotNull
     @Min(0)
     private Integer price;
+
+    private Date createdDate;
 
     private Boolean negotiable;
 

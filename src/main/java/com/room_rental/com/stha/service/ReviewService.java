@@ -8,8 +8,8 @@ import java.util.List;
 public interface ReviewService {
 
     void addReview(String username,ReviewDTO reviewDTO) throws IOException;
-    List<ReviewDTO> getAllReviews();
-    ReviewDTO getReviewById(String id);
+//    List<ReviewDTO> getAllReviews();
+    ReviewDTO getReviewById(String username, String id);
     void deleteReviewById(String id);
 
 

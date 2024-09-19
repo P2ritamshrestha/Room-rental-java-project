@@ -1,10 +1,7 @@
 package com.room_rental.com.stha.service;
 
-import com.room_rental.com.stha.DTO.ChangePasswordDTO;
-import com.room_rental.com.stha.DTO.UserResponseDTO;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
-import java.util.List;
 
 public interface UserService {
 

@@ -1,10 +1,13 @@
 package com.room_rental.com.stha.DTO;
 
+import com.room_rental.com.stha.models.User;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Date;
 
 @Getter
 @Setter
@@ -24,4 +27,6 @@ public class ReviewDTO {
     private String activity;
     @NotBlank
     private Integer rating;
+    private User user;
+    private Date createdDate;
 }

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.Date;
 @Getter
 @Setter
@@ -23,7 +24,7 @@ public class RoomRequestDTO {
 
 
     // Amenities:
-    private Date dateOfBuild;
+    private LocalDate dateOfBuild;
     private Integer bedRoom;
     private boolean kitchen;
     private boolean bathRoom;
@@ -39,5 +40,5 @@ public class RoomRequestDTO {
     private String description;
     private LocalAreal localAreal;
 
-    private MultipartFile video;
+//    private MultipartFile video;
 }

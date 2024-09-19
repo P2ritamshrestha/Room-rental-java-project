@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
+import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -39,6 +39,7 @@ public class ReviewServiceImpl implements ReviewService {
                 .message(reviewDTO.getMessage())
                 .activity(reviewDTO.getActivity())
                 .rating(reviewDTO.getRating())
+                .createdDate(new Date(System.currentTimeMillis()))
                 .user(user)
                 .build();
 
@@ -61,20 +62,20 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public List<ReviewDTO> getAllReviews() {
-        return List.of();
-    }
-
-    @Override
-    public ReviewDTO getReviewById(String id) {
+    public ReviewDTO getReviewById(String username,String id) {
         Review review= reviewRepository.findById(id).orElseThrow(()->new RoomRentalException("Review not found"));
-        ReviewDTO reviewDTO = ReviewDTO.builder()
-                .title(review.getTitle())
-                .message(review.getMessage())
-                .activity(review.getActivity())
-                .rating(review.getRating())
-                .build();
-        return reviewDTO;
+        if(Objects.nonNull(review) && review.getUser().getUsername().equals(username)) {
+            ReviewDTO reviewDTO = ReviewDTO.builder()
+                    .title(review.getTitle())
+                    .message(review.getMessage())
+                    .activity(review.getActivity())
+                    .rating(review.getRating())
+                    .createdDate(review.getCreatedDate())
+                    .user(review.getUser())
+                    .build();
+            return reviewDTO;
+        }
+        return null;
     }
 
     @Override

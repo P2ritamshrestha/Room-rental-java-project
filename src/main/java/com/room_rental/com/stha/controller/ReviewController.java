@@ -3,6 +3,7 @@ package com.room_rental.com.stha.controller;
 import com.room_rental.com.stha.DTO.ReviewDTO;
 import com.room_rental.com.stha.service.JwtService;
 import com.room_rental.com.stha.service.ReviewService;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,19 @@ public class ReviewController {
         reviewService.addReview(username,reviewDTO);
 
         return ResponseEntity.ok("Review add successfully");
+    }
+
+    @RequestMapping("/{reviewId}")
+    private ResponseEntity<?> getByReviewId(@RequestHeader("Authorization") String token,@PathVariable String reviewId){
+        token = token.startsWith("Bearer ")? token.substring(7):token;
+        String username = jwtService.extractUserName(token);
+        return ResponseEntity.ok(reviewService.getReviewById(username,reviewId));
+    }
+
+    @DeleteMapping("/{reviewId}")
+    private ResponseEntity<?> deleteReview(@PathVariable String reviewId){
+        reviewService.deleteReviewById(reviewId);
+        return ResponseEntity.ok("Review delete successfully");
     }
 }
 
