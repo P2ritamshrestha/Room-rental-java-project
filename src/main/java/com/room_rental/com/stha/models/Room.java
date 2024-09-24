@@ -4,9 +4,6 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import javax.validation.constraints.Min;
 import java.time.LocalDate;
 import java.util.Date;
 
@@ -43,5 +40,5 @@ public class Room {
     private String phoneNumber;
     private String location;
     private String description;
-    private LocalAreal localAreal;
+    private LocalArea localArea;
 }

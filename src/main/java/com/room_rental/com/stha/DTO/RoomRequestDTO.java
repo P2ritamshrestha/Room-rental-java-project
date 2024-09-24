@@ -8,6 +8,7 @@ import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
@@ -17,23 +18,23 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RoomRequestDTO {
-    @NotNull
+    @NotBlank
     private Purpose purpose;
 
-    @NotNull
+    @NotBlank
     @Size(min = 1, max = 100)
     private String title;
 
-    @NotNull
+    @NotBlank
     private Category category;
 
-    @NotNull
+    @NotBlank
     @Min(0)
     private Integer price;
 
     private Date createdDate;
 
-    @NotNull
+    @NotBlank
     private Boolean negotiable;
 
     private MultipartFile image;
@@ -53,16 +54,16 @@ public class RoomRequestDTO {
     private Boolean waterFacility;
 
     // More Details:
-    @NotNull
+    @NotBlank
     @Size(min = 10, max = 15)
     private String phoneNumber;
 
-    @NotNull
+    @NotBlank
     @Size(min = 1, max = 200)
     private String location;
 
     @Size(max = 1000)
     private String description;
 
-    private LocalAreal localAreal;
+    private LocalArea localArea;
 }

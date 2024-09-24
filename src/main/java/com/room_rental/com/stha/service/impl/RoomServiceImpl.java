@@ -51,7 +51,7 @@ public class RoomServiceImpl implements RoomService {
                 .waterFacility(roomRequestDTO.getWaterFacility())
                 .phoneNumber(roomRequestDTO.getPhoneNumber())
                 .location(roomRequestDTO.getLocation())
-                .localAreal(roomRequestDTO.getLocalAreal())
+                .localArea(roomRequestDTO.getLocalArea())
                 .build();
         if(Objects.nonNull(roomRequestDTO.getImage())){
             MultipartFile file = roomRequestDTO.getImage();
