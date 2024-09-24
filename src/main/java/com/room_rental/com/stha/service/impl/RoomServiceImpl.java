@@ -42,19 +42,19 @@ public class RoomServiceImpl implements RoomService {
                 .negotiable(roomRequestDTO.getNegotiable())
                 .dateOfBuild(roomRequestDTO.getDateOfBuild())
                 .bedRoom(roomRequestDTO.getBedRoom())
-                .kitchen(roomRequestDTO.isKitchen())
-                .bathRoom(roomRequestDTO.isBathRoom())
+                .kitchen(roomRequestDTO.getKitchen())
+                .bathRoom(roomRequestDTO.getBathRoom())
                 .face(roomRequestDTO.getFace())
-                .parking(roomRequestDTO.isParking())
-                .balcony(roomRequestDTO.isBalcony())
+                .parking(roomRequestDTO.getParking())
+                .balcony(roomRequestDTO.getBalcony())
                 .floor(roomRequestDTO.getFloor())
-                .waterFacility(roomRequestDTO.isWaterFacility())
+                .waterFacility(roomRequestDTO.getWaterFacility())
                 .phoneNumber(roomRequestDTO.getPhoneNumber())
                 .location(roomRequestDTO.getLocation())
                 .localAreal(roomRequestDTO.getLocalAreal())
                 .build();
-        if(Objects.nonNull(roomRequestDTO.getImageFile())){
-            MultipartFile file = roomRequestDTO.getImageFile();
+        if(Objects.nonNull(roomRequestDTO.getImage())){
+            MultipartFile file = roomRequestDTO.getImage();
 
             String uniqueFileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
             File newFile = new File(path);

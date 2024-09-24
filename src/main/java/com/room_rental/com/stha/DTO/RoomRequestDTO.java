@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.Date;
 @Getter
@@ -14,31 +17,52 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RoomRequestDTO {
-
+    @NotNull
     private Purpose purpose;
-    private String title;
-    private Category category;
-    private Integer price;
-    private Boolean negotiable;
-    private MultipartFile imageFile;
 
+    @NotNull
+    @Size(min = 1, max = 100)
+    private String title;
+
+    @NotNull
+    private Category category;
+
+    @NotNull
+    @Min(0)
+    private Integer price;
+
+    private Date createdDate;
+
+    @NotNull
+    private Boolean negotiable;
+
+    private MultipartFile image;
 
     // Amenities:
     private LocalDate dateOfBuild;
+
+    @Min(0)
     private Integer bedRoom;
-    private boolean kitchen;
-    private boolean bathRoom;
+
+    private Boolean kitchen;
+    private Boolean bathRoom;
     private Face face;
-    private boolean parking;
-    private boolean balcony;
+    private Boolean parking;
+    private Boolean balcony;
     private Floor floor;
-    private boolean waterFacility;
+    private Boolean waterFacility;
 
     // More Details:
+    @NotNull
+    @Size(min = 10, max = 15)
     private String phoneNumber;
-    private String location;
-    private String description;
-    private LocalAreal localAreal;
 
-//    private MultipartFile video;
+    @NotNull
+    @Size(min = 1, max = 200)
+    private String location;
+
+    @Size(max = 1000)
+    private String description;
+
+    private LocalAreal localAreal;
 }
