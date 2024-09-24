@@ -124,7 +124,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     newUser.setEmail(email);
                     newUser.setFullName(name);
                     newUser.setActive(true);
-                    newUser.setUsername(firstName);
+                    newUser.setUsername(email);
                     newUser.setRole(Role.USER);
                     return newUser;
                 });
