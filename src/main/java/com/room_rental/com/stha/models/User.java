@@ -28,6 +28,7 @@ public class User implements UserDetails {
     private boolean isActive;
     private String imagePath;
     private String imageName;
+    private String profileName;
     private Role role;
 
     @Override

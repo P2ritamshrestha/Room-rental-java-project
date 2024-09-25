@@ -48,6 +48,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             .fullName(signUpRequest.getFullName())
             .email(signUpRequest.getEmail())
             .username(signUpRequest.getUsername())
+            .profileName(signUpRequest.getUsername())
             .password(passwordEncoder.encode(signUpRequest.getPassword()))
             .phoneNumber(signUpRequest.getPhoneNumber())
             .address(signUpRequest.getAddress())
@@ -123,6 +124,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     User newUser = new User();
                     newUser.setEmail(email);
                     newUser.setFullName(name);
+                    newUser.setProfileName(firstName);
                     newUser.setActive(true);
                     newUser.setUsername(email);
                     newUser.setRole(Role.USER);
