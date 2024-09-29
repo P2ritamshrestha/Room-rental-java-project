@@ -131,6 +131,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     return newUser;
                 });
 
+        user.setUsername(email);
+        user.setProfileName(firstName);
         if (pictureUrl != null) {
             // Generate a unique file name
             String uniqueFileName = UUID.randomUUID().toString() + "_profile.jpg";
