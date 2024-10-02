@@ -47,7 +47,7 @@ public class RoomUserController {
 
 
     @PostMapping("/{id}")
-    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordDTO changePasswordDTO, @PathVariable String id){
+    public ResponseEntity<?> changePassword(@RequestBody @Valid ChangePasswordDTO changePasswordDTO, @PathVariable String id){
         roomUserService.changePassword(changePasswordDTO,id);
         return ResponseEntity.ok("Password changed successfully");
     }
