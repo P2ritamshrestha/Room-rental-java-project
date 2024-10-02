@@ -59,7 +59,7 @@ public class EmailService {
     }
 
     private void addImageAttachments(MimeMessageHelper helper) throws MessagingException {
-        helper.addInline("logo", new ClassPathResource("templates/image/logo.jpeg"), "image/jpeg");
+        helper.addInline("logo", new ClassPathResource("templates/image/loogo.png"), "image/png");
         helper.addInline("facebook", new ClassPathResource("templates/image/facebook.png"), "image/png");
         helper.addInline("twitter", new ClassPathResource("templates/image/twitter.png"), "image/png");
         helper.addInline("linkedin", new ClassPathResource("templates/image/linkedin.png"), "image/png");
