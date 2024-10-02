@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -42,5 +43,5 @@ public class Room {
     private String phoneNumber;
     private String location;
     private String description;
-    private LocalArea localArea;
+    private List<LocalArea> localArea;
 }

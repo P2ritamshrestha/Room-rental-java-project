@@ -5,6 +5,7 @@ import com.room_rental.com.stha.DTO.ProfileDTO;
 import com.room_rental.com.stha.models.User;
 import com.room_rental.com.stha.service.JwtService;
 import com.room_rental.com.stha.service.RoomUserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -39,10 +40,11 @@ public class RoomUserController {
 
 
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<User> updateProfile(@PathVariable String id, @ModelAttribute ProfileDTO profileDTO) throws IOException {
+    public ResponseEntity<User> updateProfile(@PathVariable String id, @ModelAttribute @Valid ProfileDTO profileDTO) throws IOException {
          User user= roomUserService.updateProfile(id,profileDTO);
         return  ResponseEntity.ok(user);
     }
+
 
     @PostMapping("/{id}")
     public ResponseEntity<?> changePassword(@RequestBody ChangePasswordDTO changePasswordDTO, @PathVariable String id){

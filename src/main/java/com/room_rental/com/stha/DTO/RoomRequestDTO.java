@@ -1,8 +1,7 @@
 package com.room_rental.com.stha.DTO;
 
 import com.room_rental.com.stha.models.*;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -12,9 +11,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -58,7 +57,6 @@ public class RoomRequestDTO {
     private Floor floor;
     private Boolean waterFacility;
 
-    @Enumerated(EnumType.STRING)
     private RoodType roodType;
 
     // More Details:
@@ -74,6 +72,6 @@ public class RoomRequestDTO {
     @Size(max = 1000)
     private String description;
 
-    @Enumerated(EnumType.STRING)
-    private LocalArea localArea;
+
+    private List<LocalArea> localArea;
 }
