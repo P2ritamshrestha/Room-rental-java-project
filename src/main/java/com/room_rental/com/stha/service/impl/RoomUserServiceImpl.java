@@ -82,6 +82,9 @@ public class RoomUserServiceImpl implements RoomUserService {
             if (!changePasswordDTO.getNewPassword().equals(changePasswordDTO.getConfirmPassword())) {
                 throw new PasswordMismatchException("New password and confirm password do not match");
             }
+            if(Objects.equals(changePasswordDTO.getCurrentPassword(), changePasswordDTO.getNewPassword())){
+                throw new PasswordMismatchException("Current password and New password should not be the same");
+            }
             user.setPassword(passwordEncoder.encode(changePasswordDTO.getNewPassword()));
             userRepository.save(user);
         }else
