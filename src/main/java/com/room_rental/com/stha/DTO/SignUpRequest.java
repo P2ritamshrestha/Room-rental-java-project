@@ -1,13 +1,11 @@
 package com.room_rental.com.stha.DTO;
 
-import com.room_rental.com.stha.models.Role;
 import com.room_rental.com.stha.validation.UniqueEmail;
 import com.room_rental.com.stha.validation.UniqueUsername;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
-import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
@@ -26,10 +24,12 @@ public class SignUpRequest {
     private String username;
 
     @NotBlank
-    @Pattern(regexp = "^\\d{10}$", message = "Phone number must be 10 digits")
+    @Pattern(regexp = "^98\\d{8}$", message = "Phone number must start with 98 and be exactly 10 digits")
     private String phoneNumber;
 
     @NotBlank(message = "Password not blank")
+    @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&#])[A-Za-z\\d@$!%*?&#]{8,}$",
+            message = "Password must be at least 8 characters long, contain at least one uppercase letter, one digit, and one special character.")
     private String password;
 
     @NotBlank(message = "Confirm password not blank")
