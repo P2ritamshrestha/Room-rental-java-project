@@ -30,11 +30,13 @@ public class Room {
     private Integer bedRoom;
     private Boolean kitchen;
     private Boolean bathRoom;
+    private Boolean furnishing;
     private Face face;
     private Boolean parking;
     private Boolean balcony;
     private Floor floor;
     private Boolean waterFacility;
+    private RoodType roodType;
 
     // More Details:
     private String phoneNumber;

@@ -1,6 +1,8 @@
 package com.room_rental.com.stha.DTO;
 
 import com.room_rental.com.stha.models.*;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -50,10 +52,14 @@ public class RoomRequestDTO {
     private Boolean kitchen;
     private Boolean bathRoom;
     private Face face;
+    private Boolean furnishing;
     private Boolean parking;
     private Boolean balcony;
     private Floor floor;
     private Boolean waterFacility;
+
+    @Enumerated(EnumType.STRING)
+    private RoodType roodType;
 
     // More Details:
     @NotNull
@@ -68,5 +74,6 @@ public class RoomRequestDTO {
     @Size(max = 1000)
     private String description;
 
+    @Enumerated(EnumType.STRING)
     private LocalArea localArea;
 }
