@@ -37,7 +37,7 @@ public class GlobalExceptionHandler extends Throwable {
     @ExceptionHandler( RoomRentalException.class )
     public Map<String, String> handleRoomRentalException(RoomRentalException ex) {
         Map<String, String> errorMap = new HashMap<>();
-        errorMap.put("error", ex.getMessage());
+        errorMap.put("errorMsg", ex.getMessage());
         return errorMap;
     }
 

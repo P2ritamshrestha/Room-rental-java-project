@@ -3,6 +3,7 @@ package com.room_rental.com.stha.service.impl;
 import com.room_rental.com.stha.DTO.ChangePasswordDTO;
 import com.room_rental.com.stha.DTO.ProfileDTO;
 import com.room_rental.com.stha.exception.PasswordMismatchException;
+import com.room_rental.com.stha.exception.RoomRentalException;
 import com.room_rental.com.stha.models.User;
 import com.room_rental.com.stha.repository.UserRepository;
 import com.room_rental.com.stha.service.JwtService;
@@ -83,7 +84,7 @@ public class RoomUserServiceImpl implements RoomUserService {
                 throw new PasswordMismatchException("New password and confirm password do not match");
             }
             if(Objects.equals(changePasswordDTO.getCurrentPassword(), changePasswordDTO.getNewPassword())){
-                throw new PasswordMismatchException("Current password and New password should not be the same");
+                throw new RoomRentalException("Current password and New password should not be the same");
             }
             user.setPassword(passwordEncoder.encode(changePasswordDTO.getNewPassword()));
             userRepository.save(user);
