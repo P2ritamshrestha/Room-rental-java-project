@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,8 +20,8 @@ public class ReviewController {
     private final ReviewService reviewService;
     private final JwtService jwtService;
 
-    @PostMapping
-    public ResponseEntity<?> saveReview(@RequestHeader("Authorization") String token, @RequestBody @Valid ReviewDTO reviewDTO) throws IOException {
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> saveReview(@RequestHeader("Authorization") String token, @ModelAttribute @Valid ReviewDTO reviewDTO) throws IOException {
         token = token.startsWith("Bearer ") ? token.substring(7) : token;
 
         String username = jwtService.extractUserName(token);
