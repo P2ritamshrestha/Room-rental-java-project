@@ -15,18 +15,13 @@ import java.util.Date;
 @NoArgsConstructor
 @Builder
 public class ReviewDTO {
-
-    @NotBlank
-    private String title;
     @NotBlank
     @Min(0)
     @Max(160)
     private String message;
     private MultipartFile image;
-    @NotBlank
-    private String activity;
+
     @NotBlank
     private Integer rating;
-    private User user;
     private Date createdDate;
 }

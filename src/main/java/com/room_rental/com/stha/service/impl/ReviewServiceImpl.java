@@ -35,9 +35,7 @@ public class ReviewServiceImpl implements ReviewService {
     public void addReview(String username,ReviewDTO reviewDTO) throws IOException {
         User user = userRepository.findByUsername(username).get();
         Review review = Review.builder()
-                .title(reviewDTO.getTitle())
                 .message(reviewDTO.getMessage())
-                .activity(reviewDTO.getActivity())
                 .rating(reviewDTO.getRating())
                 .createdDate(new Date(System.currentTimeMillis()))
                 .user(user)
@@ -66,12 +64,9 @@ public class ReviewServiceImpl implements ReviewService {
         Review review= reviewRepository.findById(id).orElseThrow(()->new RoomRentalException("Review not found"));
         if(Objects.nonNull(review) && review.getUser().getUsername().equals(username)) {
             ReviewDTO reviewDTO = ReviewDTO.builder()
-                    .title(review.getTitle())
                     .message(review.getMessage())
-                    .activity(review.getActivity())
                     .rating(review.getRating())
                     .createdDate(review.getCreatedDate())
-                    .user(review.getUser())
                     .build();
             return reviewDTO;
         }

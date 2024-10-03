@@ -17,11 +17,9 @@ import java.util.Date;
 public class Review {
     @Id
     private String id;
-    private String title;
     private String message;
     private String imagePath;
     private String imageName;
-    private String activity;
     private Integer rating;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
