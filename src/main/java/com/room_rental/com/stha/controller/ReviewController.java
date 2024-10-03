@@ -3,6 +3,7 @@ package com.room_rental.com.stha.controller;
 import com.room_rental.com.stha.DTO.ReviewDTO;
 import com.room_rental.com.stha.service.JwtService;
 import com.room_rental.com.stha.service.ReviewService;
+import jakarta.validation.Valid;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,7 +20,7 @@ public class ReviewController {
     private final JwtService jwtService;
 
     @PostMapping
-    public ResponseEntity<?> saveReview(@RequestHeader("Authorization") String token, ReviewDTO reviewDTO) throws IOException {
+    public ResponseEntity<?> saveReview(@RequestHeader("Authorization") String token, @RequestBody @Valid ReviewDTO reviewDTO) throws IOException {
         token = token.startsWith("Bearer ") ? token.substring(7) : token;
 
         String username = jwtService.extractUserName(token);
