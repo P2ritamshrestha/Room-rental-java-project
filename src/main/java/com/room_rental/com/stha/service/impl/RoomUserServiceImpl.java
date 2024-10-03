@@ -6,7 +6,6 @@ import com.room_rental.com.stha.exception.PasswordMismatchException;
 import com.room_rental.com.stha.exception.RoomRentalException;
 import com.room_rental.com.stha.models.User;
 import com.room_rental.com.stha.repository.UserRepository;
-import com.room_rental.com.stha.service.JwtService;
 import com.room_rental.com.stha.service.RoomUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,7 +39,7 @@ public class RoomUserServiceImpl implements RoomUserService {
     public User updateProfile(String id, ProfileDTO profileDTO) throws IOException {
         User user= userRepository.findById(id).orElseThrow(()->new UsernameNotFoundException("User not found"));
         user.setAddress(profileDTO.getAddress());
-        user.setPhoneNumber(profileDTO.getPhone());
+        user.setPhoneNumber(profileDTO.getPhoneNumber());
 
         if(Objects.nonNull(profileDTO.getImage())){
             MultipartFile file = profileDTO.getImage();

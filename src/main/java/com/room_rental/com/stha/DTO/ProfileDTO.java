@@ -13,6 +13,6 @@ public class ProfileDTO {
     private MultipartFile image;
     private  String username;
     @Pattern(regexp = "^98\\d{8}$", message = "Phone number must start with 98 and be exactly 10 digits")
-    private String phone;
+    private String phoneNumber;
     private String address;
 }
