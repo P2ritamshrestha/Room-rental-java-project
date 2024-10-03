@@ -1,6 +1,6 @@
 package com.room_rental.com.stha.DTO;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,9 +13,9 @@ import org.springframework.web.multipart.MultipartFile;
 public class ProfileDTO {
     private MultipartFile image;
 
-    @NotNull
+    @NotBlank
     @Pattern(regexp = "^98\\d{8}$", message = "Phone number must start with 98 and be exactly 10 digits")
     private String phoneNumber;
-    @NotNull
+    @NotBlank
     private String address;
 }
