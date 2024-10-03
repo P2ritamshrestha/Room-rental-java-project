@@ -35,12 +35,10 @@ public class RoomUserServiceImpl implements RoomUserService {
     private String path;
 
     private final UserRepository userRepository;
-    private  final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
 
     public User updateProfile(String id, ProfileDTO profileDTO) throws IOException {
         User user= userRepository.findById(id).orElseThrow(()->new UsernameNotFoundException("User not found"));
-        user.setEmail(profileDTO.getEmail());
         user.setAddress(profileDTO.getAddress());
         user.setPhoneNumber(profileDTO.getPhone());
 
