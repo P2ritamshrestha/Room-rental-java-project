@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class ProfileDTO {
     private MultipartFile image;
     private  String username;
-    @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&#])[A-Za-z\\d@$!%*?&#]{8,}$", message = "Password must be at least 8 characters long, contain at least one uppercase letter, one digit, and one special character.")
+    @Pattern(regexp = "^98\\d{8}$", message = "Phone number must start with 98 and be exactly 10 digits")
     private String phone;
     private String address;
 }
