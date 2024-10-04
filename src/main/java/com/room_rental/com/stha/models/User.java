@@ -21,7 +21,7 @@ public class User implements UserDetails {
     private String id;
     private String fullName;
     private String email;
-    private String username;
+    private String uniqueName;
     private String phoneNumber;
     private String password;
     private String address;
@@ -38,7 +38,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return username;
+        return email;
     }
 
     @Override

@@ -30,8 +30,8 @@ public class RoomUserController {
     public ResponseEntity<?> extractDetailsFromToken(@RequestHeader("Authorization") String token) {
         token = token.startsWith("Bearer ") ? token.substring(7) : token;
 
-        String username = jwtService.extractUserName(token);
-        User user= roomUserService.getExtractDetails(username);
+        String userEmail = jwtService.extractUserEmail(token);
+        User user= roomUserService.getExtractDetails(userEmail);
 
         Map<String, Object> response = new HashMap<>();
         response.put("User Details", user);

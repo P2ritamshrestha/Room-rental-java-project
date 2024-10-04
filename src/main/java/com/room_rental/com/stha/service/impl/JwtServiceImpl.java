@@ -17,8 +17,8 @@ import java.util.function.Function;
 public class JwtServiceImpl implements JwtService {
 
 
-    public String generateToken(String username) {
-        return Jwts.builder().setSubject(username)
+    public String generateToken(String userEmail) {
+        return Jwts.builder().setSubject(userEmail)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000000 * 60 * 24))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
@@ -35,7 +35,7 @@ public class JwtServiceImpl implements JwtService {
                 .compact();
     }
 
-    public String extractUserName(String token) {
+    public String extractUserEmail(String token) {
         return extractClaims(token , Claims::getSubject);
     }
 
@@ -54,7 +54,7 @@ public class JwtServiceImpl implements JwtService {
         return Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token).getBody();
     }
     public boolean isValidToken(String token, UserDetails userDetails) {
-        final String username = extractUserName(token);
+        final String username = extractUserEmail(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
