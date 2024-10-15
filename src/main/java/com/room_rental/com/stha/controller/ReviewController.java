@@ -22,7 +22,7 @@ public class ReviewController {
     public ResponseEntity<?> saveReview(@RequestHeader("Authorization") String token, @ModelAttribute @Valid ReviewDTO reviewDTO) throws IOException {
         token = token.startsWith("Bearer ") ? token.substring(7) : token;
 
-        String username = jwtService.extractUserEmail(token);
+        String username = jwtService.extractUsername(token);
         reviewService.addReview(username,reviewDTO);
 
         return ResponseEntity.ok("Review add successfully");
@@ -31,7 +31,7 @@ public class ReviewController {
     @RequestMapping("/{reviewId}")
     private ResponseEntity<?> getByReviewId(@RequestHeader("Authorization") String token,@PathVariable String reviewId){
         token = token.startsWith("Bearer ")? token.substring(7):token;
-        String username = jwtService.extractUserEmail(token);
+        String username = jwtService.extractUsername(token);
         return ResponseEntity.ok(reviewService.getReviewById(username,reviewId));
     }
 

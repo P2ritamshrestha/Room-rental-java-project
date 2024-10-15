@@ -61,8 +61,8 @@ public class RoomUserServiceImpl implements RoomUserService {
     }
 
     @Override
-    public User getExtractDetails(String userEmail) {
-        return userRepository.findByEmail(userEmail).orElseThrow(()->new UsernameNotFoundException("User not found"));
+    public User getExtractDetails(String username) {
+        return userRepository.findByUsernameOrEmail(username).orElseThrow(()->new UsernameNotFoundException("User not found"));
     }
 
     @Override

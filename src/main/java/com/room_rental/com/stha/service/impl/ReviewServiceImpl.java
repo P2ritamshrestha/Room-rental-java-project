@@ -33,7 +33,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public void addReview(String userEmail,ReviewDTO reviewDTO) throws IOException {
-        User user = userRepository.findByEmail(userEmail).get();
+        User user = userRepository.findByUsernameOrEmail(userEmail).get();
         Review review = Review.builder()
                 .message(reviewDTO.getMessage())
                 .rating(reviewDTO.getRating())

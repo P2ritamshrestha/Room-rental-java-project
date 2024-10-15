@@ -46,7 +46,7 @@ public class AuthController {
     public ResponseEntity<String> confirmRegistration(@RequestParam("token") String token) {
         token = token.startsWith("Bearer ") ? token.substring(7) : token;
 
-        String userEmail = jwtService.extractUserEmail(token);
+        String userEmail = jwtService.extractUsername(token);
         if(Objects.nonNull(userEmail)) {
             User user = roomUserService.getExtractDetails(userEmail);
             user.setActive(true);

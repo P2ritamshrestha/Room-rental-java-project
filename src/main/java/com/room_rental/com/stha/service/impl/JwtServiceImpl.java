@@ -1,4 +1,5 @@
 package com.room_rental.com.stha.service.impl;
+import com.room_rental.com.stha.repository.UserRepository;
 import com.room_rental.com.stha.service.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -17,8 +18,14 @@ import java.util.function.Function;
 public class JwtServiceImpl implements JwtService {
 
 
-    public String generateToken(String userEmail) {
-        return Jwts.builder().setSubject(userEmail)
+    private final UserRepository userRepository;
+
+    public JwtServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    public String generateToken(String username) {
+        return Jwts.builder().setSubject(username)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000000 * 60 * 24))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
@@ -35,7 +42,7 @@ public class JwtServiceImpl implements JwtService {
                 .compact();
     }
 
-    public String extractUserEmail(String token) {
+    public String extractUsername(String token) {
         return extractClaims(token , Claims::getSubject);
     }
 
@@ -54,8 +61,10 @@ public class JwtServiceImpl implements JwtService {
         return Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token).getBody();
     }
     public boolean isValidToken(String token, UserDetails userDetails) {
-        final String username = extractUserEmail(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        final String username = extractUsername(token);
+        var user = userRepository.findByUsernameOrEmail(username);
+        return (username.equals(userDetails.getUsername())|| username.equals(user.get().getEmail()) && !isTokenExpired(token));
+//        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
     private boolean isTokenExpired(String token) {

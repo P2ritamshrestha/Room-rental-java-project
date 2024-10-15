@@ -47,8 +47,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         User user = User.builder()
             .fullName(signUpRequest.getFullName())
             .email(signUpRequest.getEmail())
-            .uniqueName(signUpRequest.getUniqueName())
-            .profileName(signUpRequest.getUniqueName())
+            .username(signUpRequest.getUsername())
+            .profileName(signUpRequest.getUsername())
             .password(passwordEncoder.encode(signUpRequest.getPassword()))
             .phoneNumber(signUpRequest.getPhoneNumber())
             .address(signUpRequest.getAddress())
@@ -67,17 +67,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         try {
             // Authenticate the user
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(signInRequest.getUserEmail(), signInRequest.getPassword())
+                    new UsernamePasswordAuthenticationToken(signInRequest.getUsername(), signInRequest.getPassword())
             );
 
             // Find the user in the database
-            var user = userRepository.findByEmail(signInRequest.getUserEmail())
+            var user = userRepository.findByUsernameOrEmail(signInRequest.getUsername())
                     .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
             // Check if the user is active
             if (user.isActive()) {
                 // Generate JWT and refresh token
-                var jwt = jwtService.generateToken(user.getEmail());
+                var jwt = jwtService.generateToken(signInRequest.getUsername());
                 var refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
 
                 // Create response with tokens
@@ -97,8 +97,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 
     public JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
-        String userEmail= jwtService.extractUserEmail(refreshTokenRequest.getToken());
-        User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        String userEmail= jwtService.extractUsername(refreshTokenRequest.getToken());
+        User user = userRepository.findByUsernameOrEmail(userEmail).orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         if(jwtService.isValidToken(refreshTokenRequest.getToken(),user)){
             var jwt = jwtService.generateToken(user.getEmail());
@@ -119,19 +119,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String pictureUrl = oauth2User.getAttribute("picture");
         String firstName = name.split(" ")[0];
 
-        User user = userRepository.findByEmail(email)
+        User user = userRepository.findByUsernameOrEmail(email)
                 .orElseGet(() -> {
                     User newUser = new User();
                     newUser.setEmail(email);
                     newUser.setFullName(name);
                     newUser.setProfileName(firstName);
                     newUser.setActive(true);
-                    newUser.setUniqueName(email);
                     newUser.setRole(Role.USER);
                     return newUser;
                 });
-
-        user.setUniqueName(email);
         user.setProfileName(firstName);
         if (pictureUrl != null) {
             // Generate a unique file name

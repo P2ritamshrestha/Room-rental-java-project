@@ -21,7 +21,7 @@ public class SignUpRequest {
 
     @NotBlank(message = "Username not blank")
     @UniqueUsername
-    private String uniqueName;
+    private String username;
 
     @NotBlank
     @Pattern(regexp = "^98\\d{8}$", message = "Phone number must start with 98 and be exactly 10 digits")
