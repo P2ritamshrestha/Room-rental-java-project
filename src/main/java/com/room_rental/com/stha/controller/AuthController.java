@@ -46,9 +46,9 @@ public class AuthController {
     public ResponseEntity<String> confirmRegistration(@RequestParam("token") String token) {
         token = token.startsWith("Bearer ") ? token.substring(7) : token;
 
-        String username = jwtService.extractUserName(token);
-        if(Objects.nonNull(username)) {
-            User user = roomUserService.getExtractDetails(username);
+        String userEmail = jwtService.extractUsername(token);
+        if(Objects.nonNull(userEmail)) {
+            User user = roomUserService.getExtractDetails(userEmail);
             user.setActive(true);
             roomUserService.saveConfirmUser(user);
             return ResponseEntity.ok("Registration confirmed! Your account is now active.");

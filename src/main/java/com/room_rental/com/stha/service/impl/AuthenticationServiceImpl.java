@@ -58,7 +58,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             user.setImageName("09b18213-73be-4fc0-8b93-d9ddf5eda753_default.jpg");
             user.setImagePath("image\\profilePicture\\09b18213-73be-4fc0-8b93-d9ddf5eda753_default.jpg");
         userRepository.save(user);
-        var jwt = jwtService.generateToken(user.getUsername());
+        var jwt = jwtService.generateToken(user.getEmail());
         emailService.sendConfirmLinkToEmail(signUpRequest.getEmail(), jwt);
 
     }
@@ -71,13 +71,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             );
 
             // Find the user in the database
-            var user = userRepository.findByUsername(signInRequest.getUsername())
+            var user = userRepository.findByUsernameOrEmail(signInRequest.getUsername())
                     .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
             // Check if the user is active
             if (user.isActive()) {
                 // Generate JWT and refresh token
-                var jwt = jwtService.generateToken(user.getUsername());
+                var jwt = jwtService.generateToken(signInRequest.getUsername());
                 var refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
 
                 // Create response with tokens
@@ -97,11 +97,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 
     public JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
-        String username= jwtService.extractUserName(refreshTokenRequest.getToken());
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        String userEmail= jwtService.extractUsername(refreshTokenRequest.getToken());
+        User user = userRepository.findByUsernameOrEmail(userEmail).orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         if(jwtService.isValidToken(refreshTokenRequest.getToken(),user)){
-            var jwt = jwtService.generateToken(user.getUsername());
+            var jwt = jwtService.generateToken(user.getEmail());
             JwtAuthenticationResponse jwtAuthenticationResponse= new JwtAuthenticationResponse();
             jwtAuthenticationResponse.setToken(jwt);
             jwtAuthenticationResponse.setRefreshToken(refreshTokenRequest.getToken());
@@ -119,19 +119,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String pictureUrl = oauth2User.getAttribute("picture");
         String firstName = name.split(" ")[0];
 
-        User user = userRepository.findByEmail(email)
+        User user = userRepository.findByUsernameOrEmail(email)
                 .orElseGet(() -> {
                     User newUser = new User();
                     newUser.setEmail(email);
                     newUser.setFullName(name);
                     newUser.setProfileName(firstName);
                     newUser.setActive(true);
-                    newUser.setUsername(email);
                     newUser.setRole(Role.USER);
                     return newUser;
                 });
-
-        user.setUsername(email);
         user.setProfileName(firstName);
         if (pictureUrl != null) {
             // Generate a unique file name

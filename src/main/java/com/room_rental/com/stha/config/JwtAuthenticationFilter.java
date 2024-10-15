@@ -30,18 +30,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String jwt;
         final String username;
 
-        // Check if the Authorization header is missing or does not start with "Bearer "
         if (StringUtils.isEmpty(authHeader) || !org.apache.commons.lang3.StringUtils.startsWith(authHeader, "Bearer ")) {
-            // Instead of skipping, we now proceed without setting authentication
-            // This will allow Spring Security to deny access to protected resources
             filterChain.doFilter(request, response);
             return;
         }
 
         jwt = authHeader.substring(7);
-        username = jwtService.extractUserName(jwt);
+        username = jwtService.extractUsername(jwt);
 
-        // Check if the username is not null and the current security context is not authenticated
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             // Load user details from the user service
             UserDetails userDetails = userService.userDetailsService().loadUserByUsername(username);

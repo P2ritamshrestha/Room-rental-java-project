@@ -2,6 +2,7 @@ package com.room_rental.com.stha.repository;
 
 import com.room_rental.com.stha.models.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -9,9 +10,9 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends MongoRepository<User, String> {
 
-    Optional<User> findByUsername(String username);
-    Optional<User> findByEmail(String email);
+    @Query("{ '$or': [ { 'email': ?0 }, { 'username': ?0 } ] }")
+    Optional<User> findByUsernameOrEmail(String email);
 
     boolean existsByEmail(String email);
-    boolean existsByUsername(String username);
+
 }

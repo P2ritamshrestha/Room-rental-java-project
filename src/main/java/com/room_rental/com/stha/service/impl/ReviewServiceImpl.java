@@ -32,8 +32,8 @@ public class ReviewServiceImpl implements ReviewService {
     private String path;
 
     @Override
-    public void addReview(String username,ReviewDTO reviewDTO) throws IOException {
-        User user = userRepository.findByUsername(username).get();
+    public void addReview(String userEmail,ReviewDTO reviewDTO) throws IOException {
+        User user = userRepository.findByUsernameOrEmail(userEmail).get();
         Review review = Review.builder()
                 .message(reviewDTO.getMessage())
                 .rating(reviewDTO.getRating())
