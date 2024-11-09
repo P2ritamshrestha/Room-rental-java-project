@@ -23,9 +23,9 @@ public class ReviewController {
         token = token.startsWith("Bearer ") ? token.substring(7) : token;
 
         String username = jwtService.extractUsername(token);
-        reviewService.addReview(username,reviewDTO);
 
-        return ResponseEntity.ok("Review add successfully");
+
+        return ResponseEntity.ok(reviewService.addReview(username,reviewDTO));
     }
 
     @RequestMapping("/{reviewId}")
@@ -33,6 +33,13 @@ public class ReviewController {
         token = token.startsWith("Bearer ")? token.substring(7):token;
         String username = jwtService.extractUsername(token);
         return ResponseEntity.ok(reviewService.getReviewById(username,reviewId));
+    }
+
+    @RequestMapping
+    private ResponseEntity<?> getAllReview(@RequestHeader("Authorization") String token){
+        token = token.startsWith("Bearer ")? token.substring(7):token;
+        String username = jwtService.extractUsername(token);
+        return ResponseEntity.ok(reviewService.getAllReview(username));
     }
 
     @DeleteMapping("/{reviewId}")

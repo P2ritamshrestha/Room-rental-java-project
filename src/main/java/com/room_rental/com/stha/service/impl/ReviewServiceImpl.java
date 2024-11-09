@@ -18,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -32,7 +33,7 @@ public class ReviewServiceImpl implements ReviewService {
     private String path;
 
     @Override
-    public void addReview(String userEmail,ReviewDTO reviewDTO) throws IOException {
+    public Review addReview(String userEmail,ReviewDTO reviewDTO) throws IOException {
         User user = userRepository.findByUsernameOrEmail(userEmail).get();
         Review review = Review.builder()
                 .message(reviewDTO.getMessage())
@@ -57,13 +58,13 @@ public class ReviewServiceImpl implements ReviewService {
             review.setImagePath(filePath.toString());
         }
         reviewRepository.save(review);
+        return review;
     }
 
     @Override
     public ReviewDTO getReviewById(String username,String id) {
         User user = userRepository.findByUsernameOrEmail(username).orElseThrow(() -> new RoomRentalException("User not found"));
         Review review= reviewRepository.findById(id).orElseThrow(()->new RoomRentalException("Review not found"));
-        if(Objects.nonNull(review) && review.getUser().getUsername().equals(username)) {
             ReviewDTO reviewDTO = ReviewDTO.builder()
                     .fullName(user.getFullName())
                     .message(review.getMessage())
@@ -71,12 +72,15 @@ public class ReviewServiceImpl implements ReviewService {
                     .createdDate(review.getCreatedDate())
                     .build();
             return reviewDTO;
-        }
-        return null;
     }
 
     @Override
     public void deleteReviewById(String id) {
         reviewRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Review> getAllReview(String username) {
+        return  reviewRepository.findAll();
     }
 }
