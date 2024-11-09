@@ -28,18 +28,22 @@ public class ReviewController {
         return ResponseEntity.ok(reviewService.addReview(username,reviewDTO));
     }
 
-    @RequestMapping("/{reviewId}")
+    @GetMapping("/{reviewId}")
     private ResponseEntity<?> getByReviewId(@RequestHeader("Authorization") String token,@PathVariable String reviewId){
         token = token.startsWith("Bearer ")? token.substring(7):token;
         String username = jwtService.extractUsername(token);
         return ResponseEntity.ok(reviewService.getReviewById(username,reviewId));
     }
 
-    @RequestMapping
-    private ResponseEntity<?> getAllReview(@RequestHeader("Authorization") String token){
-        token = token.startsWith("Bearer ")? token.substring(7):token;
-        String username = jwtService.extractUsername(token);
-        return ResponseEntity.ok(reviewService.getAllReview(username));
+    @GetMapping
+    private ResponseEntity<?> getAllReview(){
+        return ResponseEntity.ok(reviewService.getAllReview());
+    }
+
+
+    @GetMapping("/favorite")
+    private ResponseEntity<?> getBestReview(){
+        return ResponseEntity.ok(reviewService.getBestReview());
     }
 
     @DeleteMapping("/{reviewId}")

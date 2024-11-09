@@ -14,5 +14,7 @@ public interface ReviewService {
     void deleteReviewById(String id);
 
 
-    List<Review> getAllReview(String username);
+    List<Review> getAllReview();
+
+    List<Review> getBestReview();
 }

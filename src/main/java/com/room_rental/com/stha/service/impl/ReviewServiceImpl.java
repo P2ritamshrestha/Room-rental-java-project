@@ -38,6 +38,7 @@ public class ReviewServiceImpl implements ReviewService {
         Review review = Review.builder()
                 .message(reviewDTO.getMessage())
                 .rating(reviewDTO.getRating())
+                .favorite(false)
                 .createdDate(new Date(System.currentTimeMillis()))
                 .user(user)
                 .build();
@@ -80,7 +81,12 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public List<Review> getAllReview(String username) {
+    public List<Review> getAllReview() {
         return  reviewRepository.findAll();
+    }
+
+    @Override
+    public List<Review> getBestReview() {
+       return reviewRepository.getBestReview();
     }
 }

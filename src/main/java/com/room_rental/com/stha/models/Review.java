@@ -16,11 +16,12 @@ import java.util.Date;
 @Document(collection = "review")
 public class Review {
     @Id
-    private String id;
+    private String reviewId;
     private String message;
     private String imagePath;
     private String imageName;
     private Integer rating;
+    private boolean favorite;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createdDate;
