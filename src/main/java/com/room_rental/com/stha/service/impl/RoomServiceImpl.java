@@ -54,6 +54,7 @@ public class RoomServiceImpl implements RoomService {
                 .phoneNumber(roomRequestDTO.getPhoneNumber())
                 .location(roomRequestDTO.getLocation())
                 .localArea(roomRequestDTO.getLocalArea())
+                .Wishlist(false)
                 .build();
         if(Objects.nonNull(roomRequestDTO.getImage())){
             MultipartFile file = roomRequestDTO.getImage();
@@ -93,5 +94,17 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public List<Room> getAllRooms() {
         return List.of();
+    }
+
+    @Override
+    public void setTrueOrFalseWishlist(String roomId) {
+        Room room= roomRepository.findById(roomId).orElseThrow(()->new RoomRentalException("Room not Found!"));
+
+        if(!room.isWishlist()){
+            room.setWishlist(true);
+        }else {
+            room.setWishlist(false);
+        }
+        roomRepository.save(room);
     }
 }

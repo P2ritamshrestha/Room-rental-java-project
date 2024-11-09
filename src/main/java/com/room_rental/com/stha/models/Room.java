@@ -44,4 +44,7 @@ public class Room {
     private String location;
     private String description;
     private List<LocalArea> localArea;
+
+    //
+    private boolean Wishlist;
 }
