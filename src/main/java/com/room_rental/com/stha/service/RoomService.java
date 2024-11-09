@@ -12,4 +12,6 @@ public interface RoomService {
     Room updateRoom(RoomRequestDTO roomRequestDTO);
     Room getRoom(String roomId);
     List<Room> getAllRooms();
+
+    void setTrueOrFalseWishlist(String roomId);
 }

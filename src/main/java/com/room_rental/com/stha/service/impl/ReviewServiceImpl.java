@@ -61,9 +61,11 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public ReviewDTO getReviewById(String username,String id) {
+        User user = userRepository.findByUsernameOrEmail(username).orElseThrow(() -> new RoomRentalException("User not found"));
         Review review= reviewRepository.findById(id).orElseThrow(()->new RoomRentalException("Review not found"));
         if(Objects.nonNull(review) && review.getUser().getUsername().equals(username)) {
             ReviewDTO reviewDTO = ReviewDTO.builder()
+                    .fullName(user.getFullName())
                     .message(review.getMessage())
                     .rating(review.getRating())
                     .createdDate(review.getCreatedDate())
