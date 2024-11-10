@@ -74,4 +74,6 @@ public class RoomRequestDTO {
 
 
     private List<LocalArea> localArea;
+
+    private List<MultipartFile> morePhotos;
 }

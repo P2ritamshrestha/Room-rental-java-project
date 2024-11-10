@@ -2,7 +2,9 @@ package com.room_rental.com.stha.service.impl;
 
 import com.room_rental.com.stha.DTO.RoomRequestDTO;
 import com.room_rental.com.stha.exception.RoomRentalException;
+import com.room_rental.com.stha.models.MultiImages;
 import com.room_rental.com.stha.models.Room;
+import com.room_rental.com.stha.repository.MultiImageRepo;
 import com.room_rental.com.stha.repository.RoomRepository;
 import com.room_rental.com.stha.service.RoomService;
 import lombok.RequiredArgsConstructor;
@@ -25,9 +27,12 @@ import java.util.UUID;
 public class RoomServiceImpl implements RoomService {
 
    private final RoomRepository roomRepository;
+    private final MultiImageRepo multiImageRepo;
 
     @Value("${Room.image}")
     private String path;
+    @Value("${Multiple.room.image}")
+    private String path_multiImages;
 
 
     @Override
@@ -72,6 +77,12 @@ public class RoomServiceImpl implements RoomService {
             room.setImageFileUrl(filePath.toString());
         }
         roomRepository.save(room);
+        if(Objects.nonNull(roomRequestDTO.getMorePhotos())){
+            for(MultipartFile image :roomRequestDTO.getMorePhotos()){
+                storeImage(image,room);
+
+            }
+        }
         return room;
     }
 
@@ -106,5 +117,22 @@ public class RoomServiceImpl implements RoomService {
             room.setWishlist(false);
         }
         roomRepository.save(room);
+    }
+
+    private void storeImage(MultipartFile file,Room room) throws IOException {
+
+        MultiImages multiImages = new MultiImages();
+        String uniqueFileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+        File newFile = new File(path_multiImages);
+        if(!newFile.exists()){
+            newFile.mkdirs();
+        }
+        Path filePath = Paths.get(path_multiImages, uniqueFileName);
+
+        Files.copy(file.getInputStream(), filePath);
+        multiImages.setImageFileName(uniqueFileName);
+        multiImages.setImageFileUrl(filePath.toString());
+        multiImages.setRoom(room);
+        multiImageRepo.save(multiImages);
     }
 }
