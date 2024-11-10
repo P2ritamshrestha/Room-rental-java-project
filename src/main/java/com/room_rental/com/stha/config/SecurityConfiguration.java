@@ -36,7 +36,7 @@ public class SecurityConfiguration {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/api/v1/auth/**", "/login", "/oauth2/**").permitAll()  // Public endpoints
+                        .requestMatchers("/api/v1/auth/**", "/login", "/oauth2/**","/api/review/favorite").permitAll()  // Public endpoints
                         .requestMatchers("/api/admin/**").hasAuthority(Role.ADMIN.name())         // Admin endpoints
                         .requestMatchers("/api/user/**","/api/review/**","/api/room/**").hasAuthority(Role.USER.name())           // User endpoints
                         .anyRequest().authenticated()                                             // All other endpoints require authentication
