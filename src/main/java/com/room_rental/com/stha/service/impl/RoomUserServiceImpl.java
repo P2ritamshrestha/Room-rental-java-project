@@ -89,6 +89,7 @@ public class RoomUserServiceImpl implements RoomUserService {
             throw new PasswordMismatchException("current password do not match");
     }
 
+    @Override
     public Resource getImageAsResource(String imageName) throws IOException {
         Path imagePath = Paths.get(path, imageName);
         if (Files.exists(imagePath)) {
@@ -102,5 +103,6 @@ public class RoomUserServiceImpl implements RoomUserService {
             throw new FileNotFoundException("Could not find the image " + imageName + " on the server.");
         }
     }
+
 
 }

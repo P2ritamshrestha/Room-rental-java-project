@@ -2,9 +2,7 @@ package com.room_rental.com.stha.DTO;
 
 import com.room_rental.com.stha.models.*;
 
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,7 +37,7 @@ public class RoomRequestDTO {
 
     @NotNull  // Ensures that negotiable is not null (since it's a Boolean)
     private Boolean negotiable;
-
+    @NotNull
     private MultipartFile image;
 
     // Amenities:
@@ -60,8 +58,8 @@ public class RoomRequestDTO {
     private RoodType roodType;
 
     // More Details:
-    @NotNull
-    @Size(min = 10, max = 15)
+    @NotBlank
+    @Pattern(regexp = "^98\\d{8}$", message = "Phone number must start with 98 and be exactly 10 digits")
     private String phoneNumber;
 
     @NotNull

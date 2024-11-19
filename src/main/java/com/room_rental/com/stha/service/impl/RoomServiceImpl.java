@@ -1,6 +1,8 @@
 package com.room_rental.com.stha.service.impl;
 
+import com.room_rental.com.stha.DTO.MultiImageDetails;
 import com.room_rental.com.stha.DTO.RoomRequestDTO;
+import com.room_rental.com.stha.DTO.RoomResponseDTO;
 import com.room_rental.com.stha.exception.RoomRentalException;
 import com.room_rental.com.stha.models.MultiImages;
 import com.room_rental.com.stha.models.Room;
@@ -9,18 +11,19 @@ import com.room_rental.com.stha.repository.RoomRepository;
 import com.room_rental.com.stha.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -36,7 +39,7 @@ public class RoomServiceImpl implements RoomService {
 
 
     @Override
-    public Room createRoom(RoomRequestDTO roomRequestDTO) throws IOException {
+    public RoomResponseDTO createRoom(RoomRequestDTO roomRequestDTO) throws IOException {
         Room room = Room.builder()
                 .purpose(roomRequestDTO.getPurpose())
                 .title(roomRequestDTO.getTitle())
@@ -76,14 +79,20 @@ public class RoomServiceImpl implements RoomService {
             room.setImageFileName(uniqueFileName);
             room.setImageFileUrl(filePath.toString());
         }
+
+        RoomResponseDTO roomResponseDTO = new RoomResponseDTO();
+        roomResponseDTO.setRoom(room);
+
         roomRepository.save(room);
+            List<MultiImageDetails>  multiImages = new ArrayList<>();
         if(Objects.nonNull(roomRequestDTO.getMorePhotos())){
             for(MultipartFile image :roomRequestDTO.getMorePhotos()){
-                storeImage(image,room);
-
+                MultiImageDetails multiImage = storeImage(image,room);
+                multiImages.add(multiImage);
             }
         }
-        return room;
+        roomResponseDTO.setMorePhotos(multiImages);
+        return roomResponseDTO;
     }
 
     @Override
@@ -103,8 +112,16 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public List<Room> getAllRooms() {
-        return List.of();
+    public List<RoomResponseDTO> getAllRooms() {
+        List<Room> rooms = roomRepository.findAll();
+        List<RoomResponseDTO> roomResponseDTOS = rooms.stream()
+                .map(room -> {
+                    RoomResponseDTO roomResponseDTO = new RoomResponseDTO();
+                    roomResponseDTO.setRoom(room);
+                    return roomResponseDTO;
+                })
+                .collect(Collectors.toList());
+        return roomResponseDTOS;
     }
 
     @Override
@@ -119,9 +136,10 @@ public class RoomServiceImpl implements RoomService {
         roomRepository.save(room);
     }
 
-    private void storeImage(MultipartFile file,Room room) throws IOException {
+    private MultiImageDetails storeImage(MultipartFile file,Room room) throws IOException {
 
         MultiImages multiImages = new MultiImages();
+
         String uniqueFileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
         File newFile = new File(path_multiImages);
         if(!newFile.exists()){
@@ -134,5 +152,39 @@ public class RoomServiceImpl implements RoomService {
         multiImages.setImageFileUrl(filePath.toString());
         multiImages.setRoom(room);
         multiImageRepo.save(multiImages);
+        return MultiImageDetails.builder()
+                .imageFileName(uniqueFileName)
+                .imageFileUrl(filePath.toString())
+                .build();
+
+    }
+
+    public Resource getImageAsResource(String imageName,String photo) throws IOException {
+
+        if(Objects.nonNull(photo)){
+            Path imagePath = Paths.get(path_multiImages, imageName);
+            if (Files.exists(imagePath)) {
+                Resource resource = new UrlResource(imagePath.toUri());
+                if (resource.exists()) {
+                    return resource;
+                } else {
+                    throw new FileNotFoundException("Could not find the image " + imageName + " on the server.");
+                }
+            } else {
+                throw new FileNotFoundException("Could not find the image " + imageName + " on the server.");
+            }
+        }else {
+            Path imagePath = Paths.get(path, imageName);
+            if (Files.exists(imagePath)) {
+                Resource resource = new UrlResource(imagePath.toUri());
+                if (resource.exists()) {
+                    return resource;
+                } else {
+                    throw new FileNotFoundException("Could not find the image " + imageName + " on the server.");
+                }
+            } else {
+                throw new FileNotFoundException("Could not find the image " + imageName + " on the server.");
+            }
+        }
     }
 }

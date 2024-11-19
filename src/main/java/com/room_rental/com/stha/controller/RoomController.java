@@ -4,6 +4,8 @@ import com.room_rental.com.stha.DTO.RoomRequestDTO;
 import com.room_rental.com.stha.service.RoomService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +33,20 @@ public class RoomController {
     public ResponseEntity<?> deleteRoomById(@PathVariable String roomId){
         roomService.deleteRoom(roomId);
         return ResponseEntity.ok("Deleted room");
+    }
+
+    @GetMapping("/image/{imageName}")
+    public ResponseEntity<Resource> getRoomMainImage(@PathVariable String imageName,@RequestParam(value = "photo", required = false) String photo) throws IOException {
+        Resource imageResource = roomService.getImageAsResource(imageName,photo);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + imageName + "\"")
+                .contentType(MediaType.parseMediaType("image/jpeg"))
+                .body(imageResource);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllRoom(){
+        return ResponseEntity.ok(roomService.getAllRooms());
     }
 
 }
