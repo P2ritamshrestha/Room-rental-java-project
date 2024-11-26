@@ -107,8 +107,13 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public Room getRoom(String  roomId) {
-        return roomRepository.findById(roomId).orElseThrow(()->new RoomRentalException("Room not Found!"));
+    public RoomResponseDTO getRoomById(String  roomId) {
+        Room room = roomRepository.findById(roomId).orElseThrow(()->new RoomRentalException("Room not Found!"));
+
+        RoomResponseDTO roomResponseDTO = RoomResponseDTO.builder()
+                .room(room)
+                .build();
+        return roomResponseDTO;
     }
 
     @Override

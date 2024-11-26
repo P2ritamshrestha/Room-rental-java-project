@@ -12,7 +12,7 @@ public interface RoomService {
     RoomResponseDTO createRoom(RoomRequestDTO room) throws IOException;
     void deleteRoom(String roomId);
     Room updateRoom(RoomRequestDTO roomRequestDTO);
-    Room getRoom(String roomId);
+    RoomResponseDTO getRoomById(String roomId);
     List<RoomResponseDTO> getAllRooms();
 
     void setTrueOrFalseWishlist(String roomId);

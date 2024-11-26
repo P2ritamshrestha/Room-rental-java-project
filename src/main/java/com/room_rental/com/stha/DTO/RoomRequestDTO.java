@@ -41,6 +41,7 @@ public class RoomRequestDTO {
     private MultipartFile image;
 
     // Amenities:
+    @NotNull
     private LocalDate dateOfBuild;
 
     @Min(0)
@@ -67,11 +68,12 @@ public class RoomRequestDTO {
     private String location;
 
     @NotNull
-    @Size(max = 1000)
+    @Size(max = 100)
     private String description;
 
 
     private List<LocalArea> localArea;
 
+    @Max(5)
     private List<MultipartFile> morePhotos;
 }
