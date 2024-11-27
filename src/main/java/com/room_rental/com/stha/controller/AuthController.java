@@ -67,4 +67,21 @@ public class AuthController {
         return ResponseEntity.ok(authenticationService.refreshToken(refreshTokenRequest));
     }
 
+    @PostMapping("/reset/password")
+    public ResponseEntity<?>  resetPassword(@RequestParam("email") String email) throws MessagingException {
+        authenticationService.resetPassword(email);
+        return ResponseEntity.ok("Reset password successfully");
+    }
+
+    @PostMapping("/update/password")
+    public ResponseEntity<?>  updatePassword(@RequestBody @Valid ResetPasswordDTO resetPasswordDTO , @RequestParam("token") String token) throws MessagingException {
+        token = token.startsWith("Bearer ") ? token.substring(7) : token;
+
+        String userEmail = jwtService.extractUsername(token);
+        if(Objects.nonNull(userEmail)) {
+            authenticationService.updatePassword(resetPasswordDTO,userEmail);
+        }
+        return ResponseEntity.ok("password update successfully");
+    }
+
 }

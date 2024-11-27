@@ -27,6 +27,9 @@ public class EmailService {
     @Value("${naya.aawas.user.confirm}")
     private String passwordEmailTemplate;
 
+    @Value("${naya.aawas.user.reset}")
+    private String resetPasswordEmailTemplate;
+
     public void sendConfirmLinkToEmail(String to, String token) throws MessagingException {
 //        String confirmationUrl = "http://localhost:5173/login?token=" + token;
 //
@@ -68,4 +71,20 @@ public class EmailService {
 //        FileSystemResource file = new FileSystemResource(new File("C:/Users/Admin/Documents/CV-PRITAM.pdf"));
 //        helper.addAttachment("document.pdf", file);
 //    }
+
+
+    public void sendResetLinkToEmail(String to, String token) throws MessagingException {
+
+        MimeMessage message = mailSender.createMimeMessage();
+        String confirmationUrl = "http://localhost:5173/confirm-new-password?token=" + token;
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, StandardCharsets.UTF_8.name());
+        Context context = new Context();
+        context.setVariable("link", confirmationUrl);
+        helper.setTo(to);
+        helper.setSubject("Reset");
+        String html = springTemplateEngine.process(resetPasswordEmailTemplate,context);
+        helper.setText(html,true);
+        addImageAttachments(helper);
+        mailSender.send(message);
+    }
 }

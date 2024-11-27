@@ -7,6 +7,7 @@ import com.room_rental.com.stha.models.User;
 import com.room_rental.com.stha.repository.UserRepository;
 import com.room_rental.com.stha.service.AuthenticationService;
 import com.room_rental.com.stha.service.JwtService;
+import com.room_rental.com.stha.service.RoomUserService;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,6 +27,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -37,6 +39,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final EmailService emailService;
+    private final RoomUserService roomUserService;
 
 
     @Value("${Profile.image}")
@@ -108,6 +111,28 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             return jwtAuthenticationResponse;
         }
         return null;
+    }
+
+    @Override
+    public void resetPassword(String email) throws MessagingException {
+    User user = userRepository.findByUsernameOrEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    if(Objects.isNull(user)){
+        throw new RoomRentalException("User not found");
+    }
+    var jwt = jwtService.generateToken(user.getEmail());
+    emailService.sendResetLinkToEmail(email, jwt);
+    }
+
+    @Override
+    public void updatePassword(ResetPasswordDTO resetPasswordDTO, String userEmail) {
+        User user = roomUserService.getExtractDetails(userEmail);
+        if(Objects.equals(resetPasswordDTO.getNewPassword(), resetPasswordDTO.getConfirmPassword())) {
+            user.setPassword(passwordEncoder.encode(resetPasswordDTO.getNewPassword()));
+            userRepository.save(user);
+        }else {
+            throw new RoomRentalException("Password does not match");
+        }
+
     }
 
 
